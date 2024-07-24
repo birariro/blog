@@ -3,24 +3,18 @@ package com.birairo.blog.article;
 import com.birairo.blog.article.domain.Article;
 import com.birairo.blog.article.domain.ArticleComment;
 import com.birairo.blog.article.repository.ArticleRepository;
-import com.birairo.config.P6SpyConfig;
+import com.birairo.blog.env.DomainTest;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-@Import(P6SpyConfig.class)
-@ActiveProfiles("test")
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Rollback(value = false)
+@DomainTest
 class ArticleTest {
 
     @Autowired
@@ -34,36 +28,50 @@ class ArticleTest {
     @BeforeEach
     void init(){
 
-        this.firstArticle = new Article("title1", "content1");
-        this.firstArticle = repository.save(this.firstArticle);
-        entityManager.flush();
 
-        assertThat(firstArticle)
-                .isEqualTo(repository.findById(firstArticle.getId()).get());
+//        this.firstArticle = repository.save(this.firstArticle);
+//
+//        assertThat(firstArticle)
+//                .isEqualTo(repository.findById(firstArticle.getId()).get());
     }
 
     @Test
-    void should_comments_then_article(){
+    void success(){
 
-        Article firstArticle = new Article("title1", "content1");
-        this.firstArticle = repository.save(firstArticle);
-        entityManager.flush();
+        Article article = new Article("title1", "content1");
 
-        String content1 = "good";
-        String content2 = "bad";
-        firstArticle.newComment("userName1", content1);
-        firstArticle.newComment("userName2", content2);
-        entityManager.flush();
+        ArticleComment articleComment = new ArticleComment("userName1", "good");
+        article.getComments().add(articleComment);
+        articleComment.setArticle(article);
+
+        int commentCount = article.getComments().size();
+        assertThat(commentCount).isEqualTo(1);
+    }
+
+    @Test
+    void bug(){
+
+        Article article = new Article("title1", "content1");
+
+        ArticleComment articleComment = new ArticleComment("userName1", "good");
+        articleComment.setContent("new content");
+        articleComment.setArticle(article);
+        article.getComments().add(articleComment);
+
+        int commentCount = article.getComments().size();
+        assertThat(commentCount).isEqualTo(2);
+    }
 
 
-        List<String> commentContents = repository.findById(firstArticle.getId())
-                .get()
-                .getComments()
-                .stream()
-                .map(ArticleComment::getContent)
-                .toList();
+    @Test
+    void bug2(){
 
-        assertThat(commentContents.size()).isEqualTo(2);
-        assertThat(commentContents).contains(content1, content2);
+        Article article = new Article("title1", "content1");
+
+        ArticleComment articleComment = new ArticleComment(article,"userName1", "good");
+        article.getComments().add(articleComment);
+
+        int commentCount = article.getComments().size();
+        assertThat(commentCount).isEqualTo(2);
     }
 }
