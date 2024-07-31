@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:tc:mysql:8.0.36://host.testcontainers.internal:12344/test_container_db
+    username: tc_username
+    password: tc_password
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+
+
+#logging:
+#  level:
+#    ROOT: INFO
+#    org.hibernate: TRACE
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+#    org.springframework.orm: TRACE
+#    org.springframework.transaction: TRACE
+#    com.mysql.cj.jdbc: TRACE
