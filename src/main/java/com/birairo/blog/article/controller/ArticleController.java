@@ -50,17 +50,6 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/article/comment/{id}")
-    ResponseEntity<Void> createArticleComment(@PathVariable("id") UUID id, @RequestBody CreateCommentRequest request) {
-
-        articleService.saveComment(
-                id,
-                request.author(),
-                request.content()
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
 
     @GetMapping("/article")
     ResponseEntity loadArticle() {

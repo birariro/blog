@@ -1,4 +1,4 @@
-package com.birairo.blog.article.vo;
+package com.birairo.blog.vo;
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -15,11 +15,11 @@ import org.springframework.util.Assert;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-public class Content {
+public class Author {
     private String value;
 
-    public static Content of(String value){
+    public static Author of(String value) {
         Assert.hasText(value, "can not be empty");
-        return new Content(value);
+        return new Author(value);
     }
 }

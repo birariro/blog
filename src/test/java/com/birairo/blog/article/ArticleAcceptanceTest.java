@@ -24,7 +24,7 @@ class ArticleAcceptanceTest extends AcceptanceTest {
     List<String> articleTags = List.of("AcceptanceTag1", "AcceptanceTag2");
 
     @Test
-    void 게시글을_작성과_댓글() {
+    void 게시글_작성_변경_조회() {
 
         게시글_작성();
         String id = 게시글_전체_조회후_id_조회();
@@ -33,9 +33,6 @@ class ArticleAcceptanceTest extends AcceptanceTest {
         String newArticleContent = "새로운 게시글 내용";
         게시글_수정(id, newArticleTitle, newArticleContent);
         게시글을_조회하면_변경한_내용이_보인다(id, newArticleTitle, newArticleContent);
-
-        게시글에_댓글_작성(id);
-        게시글을_조회하면_작성한_댓글이_보인다(id);
     }
 
     private void 게시글을_조회하면_변경한_내용이_보인다(String id, String title, String content) {

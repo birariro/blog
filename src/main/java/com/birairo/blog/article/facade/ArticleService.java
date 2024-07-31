@@ -5,9 +5,8 @@ import com.birairo.blog.article.domain.Tag;
 import com.birairo.blog.article.usecase.ArticleCreator;
 import com.birairo.blog.article.usecase.ArticleLoader;
 import com.birairo.blog.article.usecase.ArticleValidator;
-import com.birairo.blog.article.vo.Author;
-import com.birairo.blog.article.vo.Content;
-import com.birairo.blog.article.vo.Title;
+import com.birairo.blog.vo.Content;
+import com.birairo.blog.vo.Title;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -69,13 +68,4 @@ public class ArticleService {
         article.modify(_title, _content, _tags);
     }
 
-    @Transactional
-    public void saveComment(final UUID id, final String author, final String content) {
-
-        Author _author = Author.of(author);
-        Content _content = Content.of(content);
-
-        Article article = articleLoader.loadArticle(id);
-        article.newComment(_author, _content);
-    }
 }

@@ -13,7 +13,6 @@ public class ArticleResponse {
     private String title;
     private String content;
     private List<String> tags;
-    private List<CommentResponse> comments;
 
     public ArticleResponse(Article article) {
         this.id = article.getId();
@@ -21,9 +20,5 @@ public class ArticleResponse {
         this.content = article.getContent().getValue();
         this.tags = article.getTags()
                 .stream().map(Tag::getName).toList();
-        this.comments = article.getComments()
-                .stream()
-                .map(comment -> new CommentResponse(comment.getId(), comment.getAuthor().getValue(), comment.getContent().getValue()))
-                .toList();
     }
 }

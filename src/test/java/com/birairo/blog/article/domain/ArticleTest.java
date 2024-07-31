@@ -1,10 +1,9 @@
 package com.birairo.blog.article.domain;
 
 import com.birairo.blog.article.repository.ArticleRepository;
-import com.birairo.blog.article.vo.Author;
-import com.birairo.blog.article.vo.Content;
-import com.birairo.blog.article.vo.Title;
 import com.birairo.blog.env.DomainTest;
+import com.birairo.blog.vo.Content;
+import com.birairo.blog.vo.Title;
 import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,12 +53,6 @@ class ArticleTest {
                 .isEqualTo(Content.of(markdown));
     }
 
-    @Test
-    void should_add_comment() {
-
-        firstArticle.newComment(Author.of("comment author"), Content.of("comment content"));
-        assertThat(firstArticle.getComments().size()).isEqualTo(1);
-    }
 
     @Test
     void should_tag_article() {
