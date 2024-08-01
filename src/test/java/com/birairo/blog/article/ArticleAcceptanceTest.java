@@ -20,12 +20,11 @@ class ArticleAcceptanceTest extends AcceptanceTest {
 
     String articleTitle = "게시글 제목 입니다.";
     String articleContent = "게시글 내용 입니다.";
-    String articleComment = "게시글에 대한 댓글 입니다.";
     List<String> articleTags = List.of("AcceptanceTag1", "AcceptanceTag2");
 
     @Test
     void 게시글_작성_변경_조회() {
-
+        
         게시글_작성();
         String id = 게시글_전체_조회후_id_조회();
 
@@ -38,7 +37,6 @@ class ArticleAcceptanceTest extends AcceptanceTest {
     private void 게시글을_조회하면_변경한_내용이_보인다(String id, String title, String content) {
 
         JsonPath 게시글_조회 = 게시글_조회(id);
-        System.out.println("게시글_조회 = " + 게시글_조회);
         String responseTitle = 게시글_조회.getString("title");
         String responseContent = 게시글_조회.getString("content");
         Assertions.assertThat(responseTitle).isEqualTo(title);
@@ -72,30 +70,6 @@ class ArticleAcceptanceTest extends AcceptanceTest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         return response.jsonPath();
-    }
-
-    private void 게시글을_조회하면_작성한_댓글이_보인다(String id) {
-
-        JsonPath 게시글_조회 = 게시글_조회(id);
-        List<String> comments = 게시글_조회.getList("comments.content", String.class);
-        System.out.println("comments = " + comments);
-        Assertions.assertThat(comments).contains(articleComment);
-    }
-
-    private void 게시글에_댓글_작성(String id) {
-
-        String url = "/article/comment/" + id;
-        Map<String, Object> body = Map.of(
-                "author", "commentAuthor",
-                "content", articleComment
-        );
-
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE).body(body)
-                .when().log().all().post(url)
-                .then().log().all().extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
 

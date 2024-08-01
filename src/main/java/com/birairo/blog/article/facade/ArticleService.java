@@ -32,7 +32,7 @@ public class ArticleService {
 
     @Transactional(readOnly = true)
     public Article findArticle(final UUID id) {
-        return articleLoader.loadArticleAndCommentsAndTags(id);
+        return articleLoader.loadArticleAndTags(id);
     }
 
     private List<ArticleHeader> articleToArticleHeader(List<Article> articles) {

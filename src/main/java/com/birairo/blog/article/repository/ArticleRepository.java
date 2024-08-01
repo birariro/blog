@@ -14,8 +14,9 @@ public interface ArticleRepository extends Repository<Article, UUID> {
 
     Optional<Article> findById(UUID id);
 
-    @Query("select a from Article a " +
-            "left join fetch a.tags")
+    @Query("select distinct a from Article a " +
+            "left join fetch a.tags " +
+            "where a.id =:id")
     Optional<Article> findByIdAndTags(UUID id);
 
     boolean existsByTitle(Title title);

@@ -1,9 +1,14 @@
 server:
   port: 3844
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:6633/blog-db?&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
+    url: jdbc:mysql://127.0.0.1:6633/blog-db
     username: root
     password: '0000'
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -27,10 +32,10 @@ decorator:
 logging:
   level:
     ROOT: INFO
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.springframework.orm: TRACE
-    org.springframework.transaction: TRACE
-    com.mysql.cj.jdbc: TRACE
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+#    org.springframework.orm: TRACE
+#    org.springframework.transaction: TRACE
+#    com.mysql.cj.jdbc: TRACE
 
 
 springdoc:

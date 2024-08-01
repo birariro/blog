@@ -12,5 +12,5 @@ public interface CommentRepository extends Repository<Comment, UUID> {
 
     Optional<Comment> findById(UUID id);
 
-    List<Comment> findByTarget(UUID target);
+    List<Comment> findByParentId(UUID parentId);
 }

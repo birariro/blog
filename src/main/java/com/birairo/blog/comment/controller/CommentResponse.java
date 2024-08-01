@@ -14,7 +14,7 @@ public class CommentResponse {
 
     public CommentResponse(Comment comment) {
         this.id = comment.getId();
-        this.target = comment.getTarget();
+        this.target = comment.getParentId();
         this.author = comment.getAuthor().getValue();
         this.content = comment.getContent().getValue();
     }

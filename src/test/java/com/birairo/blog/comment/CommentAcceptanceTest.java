@@ -30,7 +30,7 @@ class CommentAcceptanceTest extends AcceptanceTest {
 
     private void 댓글_조회(String id) {
 
-        String url = "/comment/target/" + id;
+        String url = "/article/" + id + "/comment";
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().log().all().get(url)
@@ -43,9 +43,8 @@ class CommentAcceptanceTest extends AcceptanceTest {
 
     private void 댓글_작성(String id) {
 
-        String url = "/comment";
+        String url = "/article/" + id + "/comment";
         Map<String, Object> body = Map.of(
-                "target", id,
                 "author", "commentAuthor",
                 "content", commentContent
         );
