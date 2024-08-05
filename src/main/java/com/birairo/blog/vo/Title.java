@@ -1,5 +1,6 @@
 package com.birairo.blog.vo;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,8 @@ import org.springframework.util.Assert;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
 public class Title {
+    
+    @Column(name = "title", length = 100, unique = true, nullable = false)
     private String value;
 
     public static Title of(String value) {

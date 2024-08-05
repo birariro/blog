@@ -3,7 +3,6 @@ package com.birairo.blog.comment.domain;
 import com.birairo.blog.common.UpdatableDomain;
 import com.birairo.blog.vo.Author;
 import com.birairo.blog.vo.Content;
-import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -34,10 +33,8 @@ public class Comment extends UpdatableDomain {
     @Enumerated(EnumType.STRING)
     private ParentType parentType;
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "author", length = 100, nullable = false))
     private Author author;
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "content", length = 5000, nullable = false))
     private Content content;
 
     private Comment(UUID parentId, ParentType type, Author author, Content content) {
@@ -49,5 +46,14 @@ public class Comment extends UpdatableDomain {
 
     public static Comment ofArticleComment(UUID articleId, Author author, Content content) {
         return new Comment(articleId, ParentType.ARTICLE, author, content);
+    }
+
+    public static Comment ofCommentToComment(UUID commentId, Author author, Content content) {
+        return new Comment(commentId, ParentType.COMMENT, author, content);
+    }
+
+    public void modify(Author author, Content content) {
+        this.author = author;
+        this.content = content;
     }
 }

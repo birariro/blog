@@ -13,6 +13,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.HashSet;
+import java.util.List;
+
 @Entity
 @Table
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,6 +32,14 @@ public class Tag extends Domain {
 
     public Tag(String name) {
         this.name = name;
+    }
+
+    public static List<Tag> of(List<String> tags) {
+
+        return new HashSet<>(tags)
+                .stream().map(Tag::new)
+                .toList();
+
     }
 
 }

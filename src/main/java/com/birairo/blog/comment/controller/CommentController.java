@@ -1,7 +1,11 @@
 package com.birairo.blog.comment.controller;
 
-import com.birairo.blog.comment.domain.Comment;
-import com.birairo.blog.comment.facade.CommentService;
+import com.birairo.blog.comment.service.ArticleComments;
+import com.birairo.blog.comment.service.CommentCreator;
+import com.birairo.blog.comment.service.CommentLoader;
+import com.birairo.blog.comment.service.CommentModifier;
+import com.birairo.blog.vo.Author;
+import com.birairo.blog.vo.Content;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,32 +26,44 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class CommentController {
-    private final CommentService commentService;
+    private final CommentLoader commentLoader;
+    private final CommentCreator commentCreator;
+    private final CommentModifier commentModifier;
+
+    @PostMapping("/comment/{id}/comment")
+    ResponseEntity<Void> createCommentToComment(@PathVariable("id") UUID commentId, @RequestBody CreateCommentRequest request) {
+
+        commentCreator.createCommentToComment(
+                commentId,
+                Author.of(request.author()),
+                Content.of(request.content())
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
     @PostMapping("/article/{id}/comment")
     ResponseEntity<Void> createArticleComment(@PathVariable("id") UUID articleId, @RequestBody CreateCommentRequest request) {
 
-        commentService.saveArticleComment(
+        commentCreator.createArticleComment(
                 articleId,
-                request.author(),
-                request.content()
+                Author.of(request.author()),
+                Content.of(request.content())
         );
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/article/{id}/comment")
     ResponseEntity findComment(@PathVariable("id") UUID target) {
-        List<Comment> targetComments = commentService.findParentComments(target);
-        List<CommentResponse> content = targetComments.stream().map(CommentResponse::new).toList();
-        return ResponseEntity.status(HttpStatus.OK).body(content);
+        ArticleComments targetComments = commentLoader.findParentComments(target);
+        return ResponseEntity.status(HttpStatus.OK).body(targetComments);
     }
 
     @PutMapping("/article/{id}/comment")
     ResponseEntity<Void> modifyComment(@PathVariable("id") UUID id, @RequestBody ModifyCommentRequest request) {
-        commentService.saveArticleComment(
+        commentModifier.modifyComment(
                 id,
-                request.author(),
-                request.content()
+                Author.of(request.author()),
+                Content.of(request.content())
         );
         return ResponseEntity.status(HttpStatus.OK).build();
     }

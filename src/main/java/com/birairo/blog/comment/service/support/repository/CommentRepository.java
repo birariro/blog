@@ -1,4 +1,4 @@
-package com.birairo.blog.comment.repository;
+package com.birairo.blog.comment.service.support.repository;
 
 import com.birairo.blog.comment.domain.Comment;
 import org.springframework.data.repository.Repository;
@@ -13,4 +13,6 @@ public interface CommentRepository extends Repository<Comment, UUID> {
     Optional<Comment> findById(UUID id);
 
     List<Comment> findByParentId(UUID parentId);
+
+    boolean existsById(UUID id);
 }

@@ -1,4 +1,4 @@
-package com.birairo.blog.article.repository;
+package com.birairo.blog.article.service.support.repository;
 
 import com.birairo.blog.article.domain.Article;
 import com.birairo.blog.vo.Title;
@@ -20,6 +20,8 @@ public interface ArticleRepository extends Repository<Article, UUID> {
     Optional<Article> findByIdAndTags(UUID id);
 
     boolean existsByTitle(Title title);
+
+    boolean existsById(UUID id);
 
     List<Article> findAll();
 }

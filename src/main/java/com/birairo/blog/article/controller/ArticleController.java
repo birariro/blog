@@ -1,8 +1,13 @@
 package com.birairo.blog.article.controller;
 
 import com.birairo.blog.article.domain.Article;
-import com.birairo.blog.article.facade.ArticleHeader;
-import com.birairo.blog.article.facade.ArticleService;
+import com.birairo.blog.article.domain.Tag;
+import com.birairo.blog.article.service.ArticleCreator;
+import com.birairo.blog.article.service.ArticleHeader;
+import com.birairo.blog.article.service.ArticleLoader;
+import com.birairo.blog.article.service.ArticleModifier;
+import com.birairo.blog.vo.Content;
+import com.birairo.blog.vo.Title;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,15 +29,17 @@ import java.util.UUID;
 @Slf4j
 public class ArticleController {
 
-    private final ArticleService articleService;
+    private final ArticleCreator articleCreator;
+    private final ArticleModifier articleModifier;
+    private final ArticleLoader articleLoader;
 
     @PostMapping("/article")
     ResponseEntity<Void> createArticle(@RequestBody ArticleRequest request) {
 
-        articleService.saveArticle(
-                request.title(),
-                request.content(),
-                request.tags()
+        articleCreator.createArticle(
+                Title.of(request.title()),
+                Content.of(request.content()),
+                Tag.of(request.tags())
         );
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -43,11 +50,11 @@ public class ArticleController {
             @RequestBody ArticleRequest request
     ) {
 
-        articleService.saveArticle(
+        articleModifier.modifyArticle(
                 id,
-                request.title(),
-                request.content(),
-                request.tags()
+                Title.of(request.title()),
+                Content.of(request.content()),
+                Tag.of(request.tags())
         );
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -55,13 +62,13 @@ public class ArticleController {
 
     @GetMapping("/article")
     ResponseEntity loadArticle() {
-        List<ArticleHeader> content = articleService.findArticleHeader();
+        List<ArticleHeader> content = articleLoader.findArticleHeader();
         return ResponseEntity.status(HttpStatus.OK).body(content);
     }
 
     @GetMapping("/article/{id}")
     ResponseEntity loadArticle(@PathVariable("id") UUID id) {
-        Article content = articleService.findArticle(id);
+        Article content = articleLoader.findArticle(id);
         return ResponseEntity.status(HttpStatus.OK).body(new ArticleResponse(content));
     }
 }

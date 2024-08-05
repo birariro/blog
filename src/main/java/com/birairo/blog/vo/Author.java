@@ -1,5 +1,6 @@
 package com.birairo.blog.vo;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.util.Assert;
 @ToString
 @EqualsAndHashCode
 public class Author {
+    @Column(name = "author", length = 100, nullable = false)
     private String value;
 
     public static Author of(String value) {
