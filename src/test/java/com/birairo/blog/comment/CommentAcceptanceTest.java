@@ -97,7 +97,6 @@ class CommentAcceptanceTest extends AcceptanceTest {
 
         String url = "/article/" + id + "/comment";
         Map<String, Object> body = Map.of(
-                "author", "commentAuthor",
                 "content", commentContent
         );
 
@@ -113,7 +112,6 @@ class CommentAcceptanceTest extends AcceptanceTest {
 
         String url = "/comment/" + id + "/comment";
         Map<String, Object> body = Map.of(
-                "author", "commentCommentAuthor",
                 "content", commentToCommentContent
         );
 

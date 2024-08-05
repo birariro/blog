@@ -33,6 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     //aws
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     //swagger
@@ -40,6 +41,11 @@ dependencies {
     //jasypt
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.1'
+    //jwt
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'com.sun.xml.bind:jaxb-impl:4.0.1'
+    implementation 'com.sun.xml.bind:jaxb-core:4.0.1'
+    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

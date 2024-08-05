@@ -2,13 +2,11 @@ import React, {useState} from 'react';
 
 const Comment = ({comment, articleId, onActionComment, isNestedComment}) => {
 
-    const [author, setAuthor] = useState('');
     const [commentContent, setCommentContent] = useState('');
     const [showCommentForm, setShowCommentForm] = useState(!isNestedComment);
 
     const handleReply = () => {
         onActionComment(comment.id, commentContent);
-        setAuthor('');
         setCommentContent('');
         setShowCommentForm(isNestedComment);
     };
@@ -25,11 +23,6 @@ const Comment = ({comment, articleId, onActionComment, isNestedComment}) => {
             )}
             {showCommentForm && (
                 <div className="reply-form">
-                    <input
-                        value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
-                        placeholder="이름을 입력하세요"
-                    />
                     <textarea
                         value={commentContent}
                         onChange={(e) => setCommentContent(e.target.value)}

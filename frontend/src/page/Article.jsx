@@ -3,14 +3,14 @@ import {useParams} from 'react-router-dom';
 import CommentList from '../component/CommentList';
 import CommentForm from '../component/CommentForm';
 import ReactMarkdown from 'react-markdown';
-import config from "../api/config";
+import {fetchWithAuth} from "../api/api";
 
 const Article = () => {
     const [article, setArticle] = useState(null);
     const {id} = useParams();
 
     useEffect(() => {
-        fetch(`${config.API_BASE_URL}/article/${id}`)
+        fetchWithAuth(`/article/${id}`)
             .then(response => response.json())
             .then(data => setArticle(data));
     }, [id]);
