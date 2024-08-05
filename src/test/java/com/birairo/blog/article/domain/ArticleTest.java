@@ -1,6 +1,6 @@
 package com.birairo.blog.article.domain;
 
-import com.birairo.blog.article.repository.ArticleRepository;
+import com.birairo.blog.article.service.support.repository.ArticleRepository;
 import com.birairo.blog.env.DomainTest;
 import com.birairo.blog.vo.Content;
 import com.birairo.blog.vo.Title;
@@ -19,9 +19,6 @@ class ArticleTest {
 
     @Autowired
     ArticleRepository repository;
-
-    @Autowired
-    EntityManager entityManager;
 
     private Article firstArticle;
 
