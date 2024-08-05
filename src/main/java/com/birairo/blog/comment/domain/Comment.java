@@ -1,17 +1,21 @@
 package com.birairo.blog.comment.domain;
 
+import com.birairo.blog.common.UpdatableDomain;
 import com.birairo.blog.vo.Author;
 import com.birairo.blog.vo.Content;
-import com.birairo.blog.common.UpdatableDomain;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.type.descriptor.jdbc.VarcharJdbcType;
 
 import java.util.UUID;
 
@@ -22,8 +26,13 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 public class Comment extends UpdatableDomain {
 
-    @Column
-    private UUID target;
+    @Column(name = "parent_id")
+    @JdbcType(VarcharJdbcType.class)
+    private UUID parentId;
+
+    @Column(name = "parent_type")
+    @Enumerated(EnumType.STRING)
+    private ParentType parentType;
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "author", length = 100, nullable = false))
     private Author author;
@@ -31,9 +40,14 @@ public class Comment extends UpdatableDomain {
     @AttributeOverride(name = "value", column = @Column(name = "content", length = 5000, nullable = false))
     private Content content;
 
-    public Comment(UUID target, Author author, Content content) {
-        this.target = target;
+    private Comment(UUID parentId, ParentType type, Author author, Content content) {
+        this.parentId = parentId;
+        this.parentType = type;
         this.author = author;
         this.content = content;
+    }
+
+    public static Comment ofArticleComment(UUID articleId, Author author, Content content) {
+        return new Comment(articleId, ParentType.ARTICLE, author, content);
     }
 }

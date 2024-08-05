@@ -31,10 +31,8 @@ public class ArticleLoader {
     }
 
     @Transactional(readOnly = true)
-    public Article loadArticleAndCommentsAndTags(UUID id) {
-
-        Article article = repository.findByIdAndTags(id)
+    public Article loadArticleAndTags(UUID id) {
+        return repository.findByIdAndTags(id)
                 .orElseThrow(() -> new NoSuchEntityException("not found article"));
-        return article;
     }
 }
