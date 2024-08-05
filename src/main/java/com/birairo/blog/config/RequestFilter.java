@@ -34,9 +34,9 @@ public class RequestFilter implements Filter {
 
         log.info(
                 "\n" +
-                        "[REQUEST] {} - {} - {}\n" +
-                        "> Headers : {}\n" +
-                        "> Body : {}\n" +
+                        "[REQUEST] {} '{}' {}s\n" +
+                        " > Headers : {}\n" +
+                        " > Body : {}\n" +
                         "[RESPONSE] {} - {}\n",
                 ((HttpServletRequest) request).getMethod(),
                 ((HttpServletRequest) request).getRequestURI(),

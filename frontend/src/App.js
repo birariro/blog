@@ -7,12 +7,14 @@ import CreateArticle from "./page/CreateArticle";
 const App = () => {
     return (
         <Router>
-            <div className="app">
-                <Routes>
-                    <Route exact path="/" element={<ArticleList/>}/>
-                    <Route path="/article/:id" element={<Article/>}/>
-                    <Route path="/create" element={<CreateArticle/>}/>
-                </Routes>
+            <div className="board">
+                <div className="app">
+                    <Routes>
+                        <Route exact path="/" element={<ArticleList/>}/>
+                        <Route path="/article/:id" element={<Article/>}/>
+                        <Route path="/create" element={<CreateArticle/>}/>
+                    </Routes>
+                </div>
             </div>
         </Router>
     );
