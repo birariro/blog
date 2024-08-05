@@ -1,12 +1,13 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import config from "../api/config";
 
 const CreateArticle = () => {
     const [title, setTitle] = useState('');
+    const [tags, setTags] = useState([]);
     const [content, setContent] = useState('');
-    const [tags, setTags] = useState('');
+    const [currentTag, setCurrentTag] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -16,11 +17,7 @@ const CreateArticle = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                "title": title,
-                "content": content,
-                "tags": tags.split(',')
-            }),
+            body: JSON.stringify({title, content, tags}),
         })
             .then(response => {
                 if (response.status === 201) {
@@ -31,9 +28,44 @@ const CreateArticle = () => {
             });
     };
 
+    const handleTagKeyDown = (e) => {
+        if (e.key === 'Enter' && currentTag.trim()) {
+            e.preventDefault();
+            setTags([...tags, currentTag.trim()]);
+            setCurrentTag('');
+        } else if (currentTag.trim().length === 0 && e.key === 'Backspace') {
+            e.preventDefault();
+            setTags((tags) => tags.slice(0, -1));
+            setCurrentTag('');
+        }
+    };
+
+    const handleDrop = useCallback((e) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch(`${config.API_BASE_URL}/storage/upload`, {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const imageMarkdown = `![](${data.url})`;
+                    setContent(prevContent => prevContent + '\n' + imageMarkdown + '\n');
+                })
+                .catch(error => console.error('Error uploading image:', error));
+        }
+    }, []);
+
+    const handleDragOver = useCallback((e) => {
+        e.preventDefault();
+    }, []);
+
     return (
         <div className="create-article">
-            <h1>새로운 게시글 작성</h1>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
@@ -41,27 +73,34 @@ const CreateArticle = () => {
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="제목"
                     required
+                    className="title-input"
                 />
-
+                <div className="tags-input">
+                    {tags.map((tag, index) => (
+                        <span key={index} className="tag">#{tag}</span>
+                    ))}
+                    <input
+                        type="text"
+                        value={currentTag}
+                        onChange={(e) => setCurrentTag(e.target.value)}
+                        onKeyDown={handleTagKeyDown}
+                        placeholder="해시태그 입력 후 Enter"
+                    />
+                </div>
                 <div className="content-preview-container">
-                  <textarea
-                      value={content}
-                      onChange={(e) => setContent(e.target.value)}
-                      placeholder="내용 (Markdown 형식으로 작성)"
-                      required
-                  />
+          <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              placeholder="내용 (Markdown 형식으로 작성). 이미지를 드래그 앤 드롭하세요."
+              required
+          />
                     <div className="preview">
                         <ReactMarkdown>{content}</ReactMarkdown>
                     </div>
                 </div>
-
-                <input
-                    type="text"
-                    value={tags}
-                    onChange={(e) => setTags(e.target.value)}
-                    placeholder="해시태그 (쉼표로 구분)"
-                />
-                <button type="submit">저장</button>
+                <button type="submit" className="submit-button">저장</button>
             </form>
         </div>
     );
