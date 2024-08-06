@@ -1,28 +1,47 @@
 server:
   port: 3844
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   datasource:
-    url: jdbc:mysql://blog-db:6633/blog-db?&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
+    url: jdbc:mysql://127.0.0.1:6633/blog-db
     username: root
-    password: root
+    password: '0000'
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
+    show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-        format_sql: true
+        default_batch_fetch_size: 1000
+    hibernate:
+      ddl-auto: update
+  profiles:
+    include: secret
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+
 
 
 logging:
   level:
     ROOT: INFO
-    org.hibernate: TRACE
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.springframework.orm: TRACE
-    org.springframework.transaction: TRACE
-    com.mysql.cj.jdbc: TRACE
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+#    org.springframework.orm: TRACE
+#    org.springframework.transaction: TRACE
+#    com.mysql.cj.jdbc: TRACE
 
 
 springdoc:
@@ -39,3 +58,4 @@ springdoc:
   default-produces-media-type: application/json
   paths-to-match:
     - /**
+
