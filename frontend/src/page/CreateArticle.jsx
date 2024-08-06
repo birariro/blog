@@ -68,40 +68,52 @@ const CreateArticle = () => {
     return (
         <div className="create-article">
             <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="제목"
-                    required
-                    className="title-input"
-                />
-                <div className="tags-input">
-                    {tags.map((tag, index) => (
-                        <span key={index} className="tag">#{tag}</span>
-                    ))}
+                <div className="input-group">
+                    <label htmlFor="title">제목</label>
                     <input
+                        id="title"
                         type="text"
-                        value={currentTag}
-                        onChange={(e) => setCurrentTag(e.target.value)}
-                        onKeyDown={handleTagKeyDown}
-                        placeholder="해시태그 입력 후 Enter"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="멋진 제목을 입력해주세요"
+                        required
+                        className="title-input"
                     />
                 </div>
-                <div className="content-preview-container">
-          <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              placeholder="내용 (Markdown 형식으로 작성). 이미지를 드래그 앤 드롭하세요."
-              required
-          />
-                    <div className="preview">
-                        <ReactMarkdown>{content}</ReactMarkdown>
+                <div className="input-group">
+                    <label htmlFor="tags">태그</label>
+                    <div className="tags-input">
+                        {tags.map((tag, index) => (
+                            <span key={index} className="tag">#{tag}</span>
+                        ))}
+                        <input
+                            id="tags"
+                            type="text"
+                            value={currentTag}
+                            onChange={(e) => setCurrentTag(e.target.value)}
+                            onKeyDown={handleTagKeyDown}
+                            placeholder="해시태그 입력 후 Enter"
+                        />
                     </div>
                 </div>
-                <button type="submit" className="submit-button">저장</button>
+                <div className="input-group">
+                    <label htmlFor="content">내용</label>
+                    <div className="content-preview-container">
+                        <textarea
+                            id="content"
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            onDrop={handleDrop}
+                            onDragOver={handleDragOver}
+                            placeholder="내용을 Markdown 형식으로 작성해주세요. 이미지는 드래그 앤 드롭으로 추가할 수 있습니다."
+                            required
+                        />
+                        <div className="preview">
+                            <ReactMarkdown>{content}</ReactMarkdown>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" className="submit-button">게시하기</button>
             </form>
         </div>
     );

@@ -15,21 +15,31 @@ const Article = () => {
             .then(data => setArticle(data));
     }, [id]);
 
-    if (!article) return <div>Loading...</div>;
+    if (!article) return <div className="loading">Loading...</div>;
 
     return (
-        <div className="article">
-            <h1>{article.title}</h1>
-
-            <ReactMarkdown>{`# ${article.content}`}</ReactMarkdown>
-
-            <div className="tags">
-                {article.tags && article.tags.map((tag, index) => (
-                    <span key={index} className="tag">#{tag}</span>
-                ))}
-            </div>
-            <CommentList articleId={id}/>
-            <CommentForm articleId={id}/>
+        <div className="article-container">
+            <article className="article">
+                <header className="article-header">
+                    <h1 className="article-title">{article.title}</h1>
+                    <div className="article-meta">
+                        <span className="article-date">{new Date(article.createdAt).toLocaleDateString()}</span>
+                        <div className="article-tags">
+                            {article.tags && article.tags.map((tag, index) => (
+                                <span key={index} className="article-tag">#{tag}</span>
+                            ))}
+                        </div>
+                    </div>
+                </header>
+                <div className="article-content">
+                    <ReactMarkdown>{article.content}</ReactMarkdown>
+                </div>
+            </article>
+            <section className="article-comments">
+                <h2 className="comments-title">Comments</h2>
+                <CommentList articleId={id}/>
+                <CommentForm articleId={id}/>
+            </section>
         </div>
     );
 };
