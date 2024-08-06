@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {Link} from 'react-router-dom';
 import Card from '../component/Card';
 import ResponseToJson from "../api/ApiWapper";
 import {fetchWithAuth} from "../api/api";
@@ -8,7 +7,6 @@ const ArticleList = () => {
     const [articles, setArticles] = useState([]);
 
     useEffect(() => {
-
         fetchWithAuth(`/article`)
             .then(response => ResponseToJson(response))
             .then(data => setArticles(data));
@@ -17,8 +15,7 @@ const ArticleList = () => {
     return (
         <div className="article-list-container">
             <div className="article-list-header">
-                <h1>게시글</h1>
-                <Link to="/create" className="create-button">새로운 게시글 작성</Link>
+                {/*<h1>블로그 게시글</h1>*/}
             </div>
             <div className="article-list">
                 {articles.map(article => (

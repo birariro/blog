@@ -1,7 +1,7 @@
 package com.birairo.blog.member.controller;
 
 import com.birairo.blog.common.NoSuchEntityException;
-import com.birairo.blog.config.TokenGenerator;
+import com.birairo.blog.common.TokenGenerator;
 import com.birairo.blog.member.domain.Member;
 import com.birairo.blog.member.service.support.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

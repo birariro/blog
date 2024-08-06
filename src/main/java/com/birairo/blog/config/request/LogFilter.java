@@ -1,4 +1,4 @@
-package com.birairo.blog.config;
+package com.birairo.blog.config.request;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class RequestFilter implements Filter {
+public class LogFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

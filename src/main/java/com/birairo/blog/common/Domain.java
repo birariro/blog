@@ -30,4 +30,8 @@ public class Domain extends AbstractAggregateRoot {
     public UUID getId() {
         return id;
     }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }

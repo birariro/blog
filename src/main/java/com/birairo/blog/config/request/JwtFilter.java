@@ -1,5 +1,7 @@
-package com.birairo.blog.config;
+package com.birairo.blog.config.request;
 
+import com.birairo.blog.common.TokenGenerator;
+import com.birairo.blog.config.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +18,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class JwtRequestFilter extends OncePerRequestFilter {
+public class JwtFilter extends OncePerRequestFilter {
 
     private final UserDetailsServiceImpl userDetailsService;
     private final TokenGenerator tokenGenerator;

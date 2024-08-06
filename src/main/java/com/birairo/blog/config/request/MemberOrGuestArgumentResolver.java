@@ -1,4 +1,4 @@
-package com.birairo.blog.config;
+package com.birairo.blog.config.request;
 
 import com.birairo.blog.common.ClientInformation;
 import com.birairo.blog.member.domain.Member;

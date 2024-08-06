@@ -7,7 +7,7 @@ export const fetchWithAuth = async (url, options = {}) => {
         ...options.headers,
     };
 
-    if (token != undefined && token.length > 0) {
+    if (token !== null && token !== undefined && token.length > 0) {
         headers = {
             ...headers,
             'Authorization': `Bearer ${token}`,
@@ -21,7 +21,6 @@ export const fetchWithAuth = async (url, options = {}) => {
 
     if (response.status === 401) {
         localStorage.removeItem('jwt');
-        window.location.href = '/login';
         throw new Error('Unauthorized');
     }
 

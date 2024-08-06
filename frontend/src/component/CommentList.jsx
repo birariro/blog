@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import Comment from './Comment';
-import config from "../api/config";
 import ResponseToJson from "../api/ApiWapper";
 import {fetchWithAuth} from "../api/api";
 
@@ -15,7 +14,7 @@ const CommentList = ({articleId}) => {
         fetchWithAuth(`/article/${articleId}/comment`)
             .then(response => ResponseToJson(response))
             .then(data => {
-                data.comments && setComments(data.comments)
+                if (data.comments) setComments(data.comments)
             })
             .catch(error => {
                 console.error('데이터를 가져오는 중 에러 발생:', error);
@@ -24,13 +23,12 @@ const CommentList = ({articleId}) => {
 
     const saveComment = (commentId, content) => {
 
-        fetch(`${config.API_BASE_URL}/comment/${commentId}/comment`, {
+        fetchWithAuth(`/comment/${commentId}/comment`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "author": "author",
                 "content": content
             }),
         })
