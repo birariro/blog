@@ -4,7 +4,10 @@ import com.birairo.blog.comment.service.ArticleComments;
 import com.birairo.blog.comment.service.CommentCreator;
 import com.birairo.blog.comment.service.CommentLoader;
 import com.birairo.blog.comment.service.CommentModifier;
+import com.birairo.blog.common.ClientInformation;
+import com.birairo.blog.member.service.CreateIfNecessaryGuestLoad;
 import com.birairo.blog.vo.Author;
+import com.birairo.blog.vo.Client;
 import com.birairo.blog.vo.Content;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +21,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin("*")
@@ -29,24 +31,35 @@ public class CommentController {
     private final CommentLoader commentLoader;
     private final CommentCreator commentCreator;
     private final CommentModifier commentModifier;
+    private final ClientInformation clientInformation;
+    private final CreateIfNecessaryGuestLoad createIfNecessaryGuestNicknameLoader;
 
     @PostMapping("/comment/{id}/comment")
-    ResponseEntity<Void> createCommentToComment(@PathVariable("id") UUID commentId, @RequestBody CreateCommentRequest request) {
+    ResponseEntity<Void> createCommentToComment(
+            Client client,
+            @PathVariable("id") UUID commentId,
+            @RequestBody CreateCommentRequest request
+    ) {
 
+        log.info("client : "+ client.toString());
         commentCreator.createCommentToComment(
                 commentId,
-                Author.of(request.author()),
+                Author.of(client.getNickname().getValue()),
                 Content.of(request.content())
         );
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/article/{id}/comment")
-    ResponseEntity<Void> createArticleComment(@PathVariable("id") UUID articleId, @RequestBody CreateCommentRequest request) {
-
+    ResponseEntity<Void> createArticleComment(
+            Client client,
+            @PathVariable("id") UUID articleId,
+            @RequestBody CreateCommentRequest request
+    ) {
+        log.info("client : "+ client.toString());
         commentCreator.createArticleComment(
                 articleId,
-                Author.of(request.author()),
+                Author.of(client.getNickname().getValue()),
                 Content.of(request.content())
         );
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -62,7 +75,7 @@ public class CommentController {
     ResponseEntity<Void> modifyComment(@PathVariable("id") UUID id, @RequestBody ModifyCommentRequest request) {
         commentModifier.modifyComment(
                 id,
-                Author.of(request.author()),
+                Author.of(""),
                 Content.of(request.content())
         );
         return ResponseEntity.status(HttpStatus.OK).build();

@@ -2,6 +2,7 @@ import React, {useCallback, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import config from "../api/config";
+import {fetchWithAuth} from "../api/api";
 
 const CreateArticle = () => {
     const [title, setTitle] = useState('');
@@ -12,7 +13,7 @@ const CreateArticle = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        fetch(`${config.API_BASE_URL}/article`, {
+        fetchWithAuth(`/article`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

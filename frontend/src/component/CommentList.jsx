@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Comment from './Comment';
 import config from "../api/config";
 import ResponseToJson from "../api/ApiWapper";
+import {fetchWithAuth} from "../api/api";
 
 const CommentList = ({articleId}) => {
     const [comments, setComments] = useState([]);
@@ -11,7 +12,7 @@ const CommentList = ({articleId}) => {
     }, [articleId]);
 
     const fetchComments = () => {
-        fetch(`${config.API_BASE_URL}/article/${articleId}/comment`)
+        fetchWithAuth(`/article/${articleId}/comment`)
             .then(response => ResponseToJson(response))
             .then(data => {
                 data.comments && setComments(data.comments)
