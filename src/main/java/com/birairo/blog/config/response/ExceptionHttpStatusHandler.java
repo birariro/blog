@@ -1,4 +1,4 @@
-package com.birairo.blog.config;
+package com.birairo.blog.config.response;
 
 import com.birairo.blog.common.NoSuchEntityException;
 import lombok.extern.slf4j.Slf4j;

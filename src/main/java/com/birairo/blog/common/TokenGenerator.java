@@ -1,4 +1,4 @@
-package com.birairo.blog.config;
+package com.birairo.blog.common;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

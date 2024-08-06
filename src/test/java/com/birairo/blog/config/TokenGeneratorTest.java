@@ -1,5 +1,6 @@
 package com.birairo.blog.config;
 
+import com.birairo.blog.common.TokenGenerator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
