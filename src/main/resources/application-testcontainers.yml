@@ -1,10 +1,13 @@
 spring:
+  config:
+    activate:
+      on-profile:
+        - testcontainers
   datasource:
     url: jdbc:tc:mysql:8.0.36://host.testcontainers.internal:12344/test_container_db?&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
     username: tc_username
     password: tc_password
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-
 
 #logging:
 #  level:

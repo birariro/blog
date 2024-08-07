@@ -1,20 +1,26 @@
 package com.birairo.blog.stroage.service.support;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.Headers;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.IOUtils;
 import com.birairo.blog.common.IdGenerator;
 import com.birairo.blog.stroage.service.Download;
-import com.birairo.blog.stroage.service.FileKey;
 import com.birairo.blog.stroage.service.StorageAdapter;
+import com.birairo.blog.stroage.service.Upload;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Date;
 
 @Component
 public class AmazonS3Adapter implements StorageAdapter {
@@ -43,7 +49,7 @@ public class AmazonS3Adapter implements StorageAdapter {
     }
 
     @Override
-    public FileKey upload(MultipartFile file) {
+    public Upload upload(MultipartFile file) {
 
         Assert.notNull(file, "can not be null");
         Assert.notNull(file.getOriginalFilename(), "can not be null");
@@ -53,23 +59,25 @@ public class AmazonS3Adapter implements StorageAdapter {
         metadata.setContentType(file.getContentType());
         metadata.setContentLength(file.getSize());
 
+        String pathWithName = String.format("%s%s", this.path, fileName);
         try {
             amazonS3Client.putObject(new PutObjectRequest(
                     bucket,
-                    String.format("%s%s", this.path, fileName),
+                    pathWithName,
                     file.getInputStream(),
                     metadata
 
             ));
-            return new FileKey(fileName);
+            String preSignedUrl = getPreSignedUrl(bucket, pathWithName);
+
+            return new Upload(fileName, preSignedUrl);
         } catch (IOException e) {
-            //todo 예외 정의
             throw new IllegalArgumentException();
         }
     }
 
     @Override
-    public Download download(FileKey key) {
+    public Download download(Upload key) {
 
         String downloadPath = String.format("%s%s", this.path, key.value());
         S3Object object = amazonS3Client.getObject(bucket, downloadPath);
@@ -95,6 +103,53 @@ public class AmazonS3Adapter implements StorageAdapter {
         }
         String extension = name.substring(index);
         return idGenerator.generateId() + extension;
+    }
+
+    /**
+     * presigned url 발급
+     *
+     * @param bucket   버킷  이름
+     * @param fileName
+     * @return presigned url
+     */
+    public String getPreSignedUrl(String bucket, String fileName) {
+
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(bucket, fileName);
+        URL url = amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest);
+        return url.toString();
+    }
+
+    /**
+     * 파일 조회용 presigned url 생성
+     *
+     * @param bucket   버킷 이름
+     * @param fileName S3 업로드용 파일 이름
+     * @return presigned url
+     */
+    private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String bucket, String fileName) {
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(bucket, fileName)
+                        .withMethod(HttpMethod.GET);
+//                        .withExpiration(getPreSignedUrlExpiration());
+        generatePresignedUrlRequest.addRequestParameter(
+                Headers.S3_CANNED_ACL,
+                CannedAccessControlList.PublicRead.toString()
+        );
+        return generatePresignedUrlRequest;
+    }
+
+    /**
+     * presigned url 유효 기간 설정
+     *
+     * @return 유효기간
+     */
+    private Date getPreSignedUrlExpiration() {
+        Date expiration = new Date();
+        long expTimeMillis = expiration.getTime();
+        expTimeMillis += 1000 * 60 * 2;
+        expiration.setTime(expTimeMillis);
+        return expiration;
     }
 
 }

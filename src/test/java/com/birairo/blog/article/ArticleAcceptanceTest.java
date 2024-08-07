@@ -10,6 +10,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.List;
 import java.util.Map;
@@ -23,8 +24,9 @@ class ArticleAcceptanceTest extends AcceptanceTest {
     List<String> articleTags = List.of("AcceptanceTag1", "AcceptanceTag2");
 
     @Test
+    @WithMockUser
     void 게시글_작성_변경_조회() {
-        
+
         게시글_작성();
         String id = 게시글_전체_조회후_id_조회();
 

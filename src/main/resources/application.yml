@@ -1,61 +1,14 @@
-server:
-  port: 3844
-  servlet:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
-
 spring:
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
-  datasource:
-    url: jdbc:mysql://127.0.0.1:6633/blog-db
-    username: root
-    password: '0000'
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-        default_batch_fetch_size: 1000
-    hibernate:
-      ddl-auto: update
   profiles:
-    include: secret
-
-decorator:
-  datasource:
-    p6spy:
-      enable-logging: true
-
-
-
-logging:
-  level:
-    ROOT: INFO
-#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-#    org.springframework.orm: TRACE
-#    org.springframework.transaction: TRACE
-#    com.mysql.cj.jdbc: TRACE
-
-
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    groups-order: DESC
-    operationsSorter: method
-    disable-swagger-default-url: true
-    display-request-duration: true
-  api-docs:
-    path: /api-docs
-  show-actuator: true
-  default-consumes-media-type: application/json
-  default-produces-media-type: application/json
-  paths-to-match:
-    - /**
-
+    active: prod
+    group:
+      test:
+        - secret-demo
+        - common
+        - testcontainers
+      demo:
+        - secret-demo
+        - common
+      prod:
+        - secret
+        - common

@@ -14,7 +14,7 @@ public class JasyptConfig {
     private String algorithm;
 
     public JasyptConfig(
-            @Value("${jasypt.encryptor.key:testKey}") String secretKey,
+            @Value("${jasypt.encryptor.key}") String secretKey,
             @Value("${jasypt.encryptor.algorithm}") String algorithm
     ) {
         this.secretKey = secretKey;
