@@ -6,10 +6,13 @@ import com.birairo.blog.comment.service.ArticleComments;
 import com.birairo.blog.comment.service.CommentCreator;
 import com.birairo.blog.comment.service.CommentLoader;
 import com.birairo.blog.comment.service.CommentModifier;
-import com.birairo.blog.comment.service.support.repository.CommentRepository;
+import com.birairo.blog.comment.service.NestedComment;
+import com.birairo.blog.comment.service.ParentComment;
 import com.birairo.blog.common.NoSuchEntityException;
+import com.birairo.blog.member.service.MemberLoad;
 import com.birairo.blog.vo.Author;
 import com.birairo.blog.vo.Content;
+import com.birairo.blog.vo.Parent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,7 @@ import java.util.UUID;
 public class CommentService implements CommentCreator, CommentModifier, CommentLoader {
     private final CommentRepository commentRepository;
     private final ArticleValidator articleValidator;
+    private final MemberLoad memberLoader;
 
     @Transactional
     public void createArticleComment(UUID articleId, Author author, Content content) {
@@ -70,12 +74,21 @@ public class CommentService implements CommentCreator, CommentModifier, CommentL
      */
     public ArticleComments findParentComments(UUID parentId) {
 
-        List<Comment> comments = commentRepository.findByParentId(parentId);
+        List<Comment> comments = commentRepository.findByParentId(Parent.of(parentId));
 
-        ArticleComments articleComments = new ArticleComments(parentId, comments);
+        ArticleComments articleComments = new ArticleComments(parentId);
+
         for (Comment comment : comments) {
-            UUID commentId = comment.getId();
-            articleComments.setNestedComments(commentId, commentRepository.findByParentId(commentId));
+
+            String authorNickname = memberLoader.getMemberNickName(comment.getAuthor().getValue()).getValue();
+            ParentComment parentComment = new ParentComment(authorNickname, comment);
+            List<Comment> nestedComments = commentRepository.findByParentId(Parent.of(comment.getId()));
+
+            for (Comment nestedComment : nestedComments) {
+                String value = memberLoader.getMemberNickName(nestedComment.getAuthor().getValue()).getValue();
+                parentComment.addNestedComment(new NestedComment(value, nestedComment));
+            }
+            articleComments.addParentComment(parentComment);
         }
 
         return articleComments;

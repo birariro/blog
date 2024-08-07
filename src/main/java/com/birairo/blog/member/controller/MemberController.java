@@ -3,7 +3,7 @@ package com.birairo.blog.member.controller;
 import com.birairo.blog.common.NoSuchEntityException;
 import com.birairo.blog.common.TokenGenerator;
 import com.birairo.blog.member.domain.Member;
-import com.birairo.blog.member.service.support.repository.MemberRepository;
+import com.birairo.blog.member.service.support.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

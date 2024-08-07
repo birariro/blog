@@ -3,7 +3,7 @@ package com.birairo.blog.config.request;
 import com.birairo.blog.common.ClientInformation;
 import com.birairo.blog.member.domain.Member;
 import com.birairo.blog.member.service.CreateIfNecessaryGuestLoad;
-import com.birairo.blog.member.service.support.repository.MemberRepository;
+import com.birairo.blog.member.service.support.MemberRepository;
 import com.birairo.blog.vo.Client;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -45,10 +45,10 @@ public class MemberOrGuestArgumentResolver implements HandlerMethodArgumentResol
             Member member = memberRepository.findByLoginId(user.getUsername())
                     .orElseThrow(() -> new IllegalAccessException());
 
-            return Client.of(member.getNickname(), true);
+            return Client.of(member.getId(), true);
         }
 
         String ip = clientInformation.getIp(webRequest.getNativeRequest(HttpServletRequest.class));
-        return Client.of(createIfNecessaryGuestNicknameLoad.getGuest(ip).getNickname(), false);
+        return Client.of(createIfNecessaryGuestNicknameLoad.getGuest(ip).getId(), false);
     }
 }
