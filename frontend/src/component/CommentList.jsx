@@ -22,7 +22,6 @@ const CommentList = ({articleId}) => {
     };
 
     const saveComment = (commentId, content) => {
-
         fetchWithAuth(`/comment/${commentId}/comment`, {
             method: 'POST',
             headers: {
@@ -35,18 +34,15 @@ const CommentList = ({articleId}) => {
             .then(() => {
                 fetchComments();
             });
-
     };
 
     return (
         <div className="comment-list">
-            <h3>댓글</h3>
+            <h3 className="comment-list-title">댓글</h3>
             {comments.map(comment => (
                 <Comment key={comment.id} comment={comment} articleId={articleId} onActionComment={saveComment} isNestedComment={false}/>
             ))}
         </div>
     );
 };
-
 export default CommentList;
-

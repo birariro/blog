@@ -3,7 +3,6 @@ package com.birairo.blog.member.service.support;
 import com.birairo.blog.member.domain.Guest;
 import com.birairo.blog.member.service.CreateIfNecessaryGuestLoad;
 import com.birairo.blog.member.service.NicknameGenerate;
-import com.birairo.blog.member.service.support.repository.GuestRepository;
 import com.birairo.blog.vo.Nickname;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

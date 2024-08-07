@@ -20,14 +20,14 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-public class Author {
+public class Parent {
 
-    @Column(name = "author_id")
+    @Column(name = "parent_id")
     @JdbcType(VarcharJdbcType.class)
     private UUID value;
 
-    public static Author of(UUID value) {
+    public static Parent of(UUID value) {
         Assert.notNull(value, "can not be null");
-        return new Author(value);
+        return new Parent(value);
     }
 }

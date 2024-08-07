@@ -6,6 +6,7 @@ const CommentForm = ({articleId}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!content.trim()) return;
 
         fetchWithAuth(`/article/${articleId}/comment`, {
             method: 'POST',
@@ -23,13 +24,13 @@ const CommentForm = ({articleId}) => {
 
     return (
         <form onSubmit={handleSubmit} className="comment-form">
-
             <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="댓글을 입력하세요"
+                className="comment-textarea"
             />
-            <button type="submit">댓글 작성</button>
+            <button type="submit" className="submit-comment">댓글 작성</button>
         </form>
     );
 };
