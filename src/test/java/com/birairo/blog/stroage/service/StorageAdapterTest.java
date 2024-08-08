@@ -48,10 +48,11 @@ class StorageAdapterTest {
 
         this.fakeMockAmazonS3 = new FakeMockAmazonS3();
         AmazonS3 amazonS3 = fakeMockAmazonS3.amazonS3();
+        String url = "https://test.com";
         String bucketName = "bucketname";
         amazonS3.createBucket(bucketName);
 
-        this.sut = new AmazonS3Adapter(amazonS3, idGenerator, bucketName, "dirpath");
+        this.sut = new AmazonS3Adapter(amazonS3, idGenerator, url, bucketName, "dirpath");
     }
 
     @AfterEach
