@@ -1,6 +1,6 @@
-package com.birairo.blog.comment.service;
+package com.birairo.blog.member.service;
 
-import com.birairo.blog.comment.domain.Comment;
+import com.birairo.blog.member.domain.Comment;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -17,9 +17,9 @@ public class ParentComment {
     private final LocalDateTime createdAt;
     private List<NestedComment> comments;
 
-    public ParentComment(String author, Comment comment) {
+    public ParentComment(Comment comment) {
         this.id = comment.getId();
-        this.author = author;
+        this.author = comment.getAuthor().getNickname().getValue();
         this.content = comment.getContent().getValue();
         this.createdAt = comment.getCreatedAt();
         this.comments = new ArrayList<>();

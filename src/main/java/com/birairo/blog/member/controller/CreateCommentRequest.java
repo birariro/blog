@@ -1,4 +1,4 @@
-package com.birairo.blog.comment.controller;
+package com.birairo.blog.member.controller;
 
 record CreateCommentRequest(
         String content

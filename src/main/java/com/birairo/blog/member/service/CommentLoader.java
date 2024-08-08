@@ -1,8 +1,7 @@
-package com.birairo.blog.comment.service;
+package com.birairo.blog.member.service;
 
-import com.birairo.blog.comment.domain.Comment;
+import com.birairo.blog.member.domain.Comment;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface CommentLoader {

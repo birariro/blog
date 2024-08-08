@@ -18,7 +18,7 @@ import java.util.Map;
 @CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
-public class MemberController {
+public class LoginController {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
