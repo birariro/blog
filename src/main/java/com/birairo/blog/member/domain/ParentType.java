@@ -1,4 +1,4 @@
-package com.birairo.blog.comment.domain;
+package com.birairo.blog.member.domain;
 
 public enum ParentType {
     ARTICLE, COMMENT

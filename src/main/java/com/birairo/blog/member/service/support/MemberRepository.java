@@ -9,4 +9,7 @@ import java.util.UUID;
 public interface MemberRepository extends Repository<Member, UUID> {
     Optional<Member> findByLoginId(String loginId);
     Optional<Member> findById(UUID id);
+    Optional<Member> findFirstByIp(String ip);
+    boolean existsByIp(String ip);
+    Member save(Member guest);
 }

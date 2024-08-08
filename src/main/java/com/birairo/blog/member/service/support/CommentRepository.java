@@ -1,7 +1,8 @@
-package com.birairo.blog.comment.service.support;
+package com.birairo.blog.member.service.support;
 
-import com.birairo.blog.comment.domain.Comment;
+import com.birairo.blog.member.domain.Comment;
 import com.birairo.blog.vo.Parent;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
 import java.util.List;
@@ -13,7 +14,8 @@ interface CommentRepository extends Repository<Comment, UUID> {
 
     Optional<Comment> findById(UUID id);
 
-    List<Comment> findByParentId(Parent parentId);
+    @Query("select c from Comment c left join fetch c.author where c.parentId = :parentId")
+    List<Comment> findByParentIdWithAuthor(Parent parentId);
 
     boolean existsById(UUID id);
 }

@@ -1,4 +1,4 @@
-package com.birairo.blog.comment.service;
+package com.birairo.blog.member.service;
 
 import lombok.Getter;
 

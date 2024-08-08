@@ -1,15 +1,15 @@
-package com.birairo.blog.comment.service.support;
+package com.birairo.blog.member.service.support;
 
 import com.birairo.blog.article.service.ArticleValidator;
-import com.birairo.blog.comment.domain.Comment;
-import com.birairo.blog.comment.service.ArticleComments;
-import com.birairo.blog.comment.service.CommentCreator;
-import com.birairo.blog.comment.service.CommentLoader;
-import com.birairo.blog.comment.service.CommentModifier;
-import com.birairo.blog.comment.service.NestedComment;
-import com.birairo.blog.comment.service.ParentComment;
 import com.birairo.blog.common.NoSuchEntityException;
-import com.birairo.blog.member.service.MemberLoad;
+import com.birairo.blog.member.domain.Comment;
+import com.birairo.blog.member.domain.Member;
+import com.birairo.blog.member.service.ArticleComments;
+import com.birairo.blog.member.service.CommentCreator;
+import com.birairo.blog.member.service.CommentLoader;
+import com.birairo.blog.member.service.CommentModifier;
+import com.birairo.blog.member.service.NestedComment;
+import com.birairo.blog.member.service.ParentComment;
 import com.birairo.blog.vo.Author;
 import com.birairo.blog.vo.Content;
 import com.birairo.blog.vo.Parent;
@@ -27,7 +27,7 @@ import java.util.UUID;
 public class CommentService implements CommentCreator, CommentModifier, CommentLoader {
     private final CommentRepository commentRepository;
     private final ArticleValidator articleValidator;
-    private final MemberLoad memberLoader;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public void createArticleComment(UUID articleId, Author author, Content content) {
@@ -35,8 +35,9 @@ public class CommentService implements CommentCreator, CommentModifier, CommentL
         if (doNotExistArticle(articleId)) {
             throw new NoSuchEntityException("not found article");
         }
-
-        Comment comment = Comment.ofArticleComment(articleId, author, content);
+        Member member = memberRepository.findById(author.getValue())
+                .orElseThrow();
+        Comment comment = Comment.ofArticleComment(articleId, member, content);
         commentRepository.save(comment);
     }
 
@@ -46,7 +47,9 @@ public class CommentService implements CommentCreator, CommentModifier, CommentL
         if (doNotExistComment(commentId)) {
             throw new NoSuchEntityException("not found article");
         }
-        Comment comment = Comment.ofCommentToComment(commentId, author, content);
+        Member member = memberRepository.findById(author.getValue())
+                .orElseThrow();
+        Comment comment = Comment.ofCommentToComment(commentId, member, content);
         commentRepository.save(comment);
     }
 
@@ -61,8 +64,10 @@ public class CommentService implements CommentCreator, CommentModifier, CommentL
     @Transactional
     public void modifyComment(UUID id, Author author, Content content) {
 
+        Member member = memberRepository.findById(author.getValue())
+                .orElseThrow();
         Comment comment = findComment(id);
-        comment.modify(author, content);
+        comment.modify(member, content);
     }
 
     /**
@@ -74,19 +79,17 @@ public class CommentService implements CommentCreator, CommentModifier, CommentL
      */
     public ArticleComments findParentComments(UUID parentId) {
 
-        List<Comment> comments = commentRepository.findByParentId(Parent.of(parentId));
+        List<Comment> comments = commentRepository.findByParentIdWithAuthor(Parent.of(parentId));
 
         ArticleComments articleComments = new ArticleComments(parentId);
 
         for (Comment comment : comments) {
 
-            String authorNickname = memberLoader.getMemberNickName(comment.getAuthor().getValue()).getValue();
-            ParentComment parentComment = new ParentComment(authorNickname, comment);
-            List<Comment> nestedComments = commentRepository.findByParentId(Parent.of(comment.getId()));
+            ParentComment parentComment = new ParentComment(comment);
+            List<Comment> nestedComments = commentRepository.findByParentIdWithAuthor(Parent.of(comment.getId()));
 
             for (Comment nestedComment : nestedComments) {
-                String value = memberLoader.getMemberNickName(nestedComment.getAuthor().getValue()).getValue();
-                parentComment.addNestedComment(new NestedComment(value, nestedComment));
+                parentComment.addNestedComment(new NestedComment(nestedComment));
             }
             articleComments.addParentComment(parentComment);
         }

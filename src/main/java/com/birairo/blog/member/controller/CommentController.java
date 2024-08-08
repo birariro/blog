@@ -1,9 +1,9 @@
-package com.birairo.blog.comment.controller;
+package com.birairo.blog.member.controller;
 
-import com.birairo.blog.comment.service.ArticleComments;
-import com.birairo.blog.comment.service.CommentCreator;
-import com.birairo.blog.comment.service.CommentLoader;
-import com.birairo.blog.comment.service.CommentModifier;
+import com.birairo.blog.member.service.ArticleComments;
+import com.birairo.blog.member.service.CommentCreator;
+import com.birairo.blog.member.service.CommentLoader;
+import com.birairo.blog.member.service.CommentModifier;
 import com.birairo.blog.vo.Author;
 import com.birairo.blog.vo.Client;
 import com.birairo.blog.vo.Content;
