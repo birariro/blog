@@ -29,11 +29,13 @@ public class AmazonS3Adapter implements StorageAdapter {
     private final IdGenerator idGenerator;
     private final String bucket;
     private final String path;
+    private final String url;
 
 
     public AmazonS3Adapter(
             AmazonS3 amazonS3Client,
             IdGenerator idGenerator,
+            @Value("${aws.s3.url}") String url,
             @Value("${aws.s3.bucket}") String bucket,
             @Value("${aws.s3.path}") String path
     ) {
@@ -41,11 +43,8 @@ public class AmazonS3Adapter implements StorageAdapter {
         this.amazonS3Client = amazonS3Client;
         this.idGenerator = idGenerator;
         this.bucket = bucket;
-
-        if (!path.startsWith("/")) {
-            path = "/" + path;
-        }
         this.path = path;
+        this.url = url;
     }
 
     @Override
@@ -68,9 +67,10 @@ public class AmazonS3Adapter implements StorageAdapter {
                     metadata
 
             ));
-            String preSignedUrl = getPreSignedUrl(bucket, pathWithName);
+            //String preSignedUrl = getPreSignedUrl(bucket, pathWithName);
+            String url = String.format("%s/%s", this.url, pathWithName);
 
-            return new Upload(fileName, preSignedUrl);
+            return new Upload(fileName, url);
         } catch (IOException e) {
             throw new IllegalArgumentException();
         }
