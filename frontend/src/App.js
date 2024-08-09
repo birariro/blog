@@ -5,6 +5,7 @@ import ArticleList from './page/ArticleList';
 import Article from './page/Article';
 import CreateArticle from "./page/CreateArticle";
 import LoginForm from "./page/LoginForm";
+import EditArticle from "./page/EditArticle";
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,7 +43,9 @@ const App = () => {
                         <Route path="/article/:id" element={<Article/>}/>
                         <Route path="/create" element={<CreateArticle/>}/>
                         <Route path="/login" element={<LoginForm onLogin={handleLogin}/>}/>
-                        
+                        <Route path="/edit-article/:id" element={<EditArticle/>}/>
+
+
                     </Routes>
                 </div>
             </div>

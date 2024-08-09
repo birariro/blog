@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import {useParams, useNavigate} from 'react-router-dom';
 import CommentList from '../component/CommentList';
 import CommentForm from '../component/CommentForm';
 import ReactMarkdown from 'react-markdown';
@@ -8,12 +8,17 @@ import {fetchWithAuth} from "../api/api";
 const Article = () => {
     const [article, setArticle] = useState(null);
     const {id} = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchWithAuth(`/article/${id}`)
             .then(response => response.json())
             .then(data => setArticle(data));
     }, [id]);
+
+    const handleEdit = () => {
+        navigate(`/edit-article/${id}`);
+    };
 
     if (!article) return <div className="loading">Loading...</div>;
 
@@ -34,6 +39,7 @@ const Article = () => {
                 <div className="article-content">
                     <ReactMarkdown>{article.content}</ReactMarkdown>
                 </div>
+                <button onClick={handleEdit} className="edit-button">수정하기</button>
             </article>
             <section className="article-comments">
                 <h2 className="comments-title">Comments</h2>
