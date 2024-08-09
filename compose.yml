@@ -1,5 +1,9 @@
 version: '3.8'
 
+networks:
+  blog:
+    driver: bridge
+
 services:
   blog-db:
     container_name: blog-db
@@ -12,3 +16,5 @@ services:
       MYSQL_ROOT_PASSWORD: "0000"
       MYSQL_DATABASE: "blog-db"
       MYSQL_TCP_PORT: 6633
+    networks:
+      - blog
