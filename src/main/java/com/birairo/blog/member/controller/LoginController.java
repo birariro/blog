@@ -31,9 +31,8 @@ public class LoginController {
         Member member = memberRepository.findByLoginId(loginRequest.id())
                 .orElseThrow(() -> new NoSuchEntityException("not found member"));
 
-        //todo 적용 필요
-        //if (!passwordEncoder.matches(loginRequest.pw(), member.getLoginPw())) {
-        if (!loginRequest.pw().equals(member.getLoginPw())) {
+
+        if (!passwordEncoder.matches(loginRequest.pw(), member.getLoginPw())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         String jwt = tokenGenerator.generateToken(member.getLoginId());
