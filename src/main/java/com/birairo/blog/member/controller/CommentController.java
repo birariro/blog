@@ -1,11 +1,9 @@
-package com.birairo.blog.comment.controller;
+package com.birairo.blog.member.controller;
 
-import com.birairo.blog.comment.service.ArticleComments;
-import com.birairo.blog.comment.service.CommentCreator;
-import com.birairo.blog.comment.service.CommentLoader;
-import com.birairo.blog.comment.service.CommentModifier;
-import com.birairo.blog.common.ClientInformation;
-import com.birairo.blog.member.service.CreateIfNecessaryGuestLoad;
+import com.birairo.blog.member.service.ArticleComments;
+import com.birairo.blog.member.service.CommentCreator;
+import com.birairo.blog.member.service.CommentLoader;
+import com.birairo.blog.member.service.CommentModifier;
 import com.birairo.blog.vo.Author;
 import com.birairo.blog.vo.Client;
 import com.birairo.blog.vo.Content;
@@ -31,8 +29,6 @@ public class CommentController {
     private final CommentLoader commentLoader;
     private final CommentCreator commentCreator;
     private final CommentModifier commentModifier;
-    private final ClientInformation clientInformation;
-    private final CreateIfNecessaryGuestLoad createIfNecessaryGuestNicknameLoader;
 
     @PostMapping("/comment/{id}/comment")
     ResponseEntity<Void> createCommentToComment(
@@ -41,10 +37,9 @@ public class CommentController {
             @RequestBody CreateCommentRequest request
     ) {
 
-        log.info("client : "+ client.toString());
         commentCreator.createCommentToComment(
                 commentId,
-                Author.of(client.getNickname().getValue()),
+                Author.of(client.getId()),
                 Content.of(request.content())
         );
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -56,10 +51,9 @@ public class CommentController {
             @PathVariable("id") UUID articleId,
             @RequestBody CreateCommentRequest request
     ) {
-        log.info("client : "+ client.toString());
         commentCreator.createArticleComment(
                 articleId,
-                Author.of(client.getNickname().getValue()),
+                Author.of(client.getId()),
                 Content.of(request.content())
         );
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -72,10 +66,10 @@ public class CommentController {
     }
 
     @PutMapping("/article/{id}/comment")
-    ResponseEntity<Void> modifyComment(@PathVariable("id") UUID id, @RequestBody ModifyCommentRequest request) {
+    ResponseEntity<Void> modifyComment(Client client, @PathVariable("id") UUID id, @RequestBody ModifyCommentRequest request) {
         commentModifier.modifyComment(
                 id,
-                Author.of(""),
+                Author.of(client.getId()),
                 Content.of(request.content())
         );
         return ResponseEntity.status(HttpStatus.OK).build();

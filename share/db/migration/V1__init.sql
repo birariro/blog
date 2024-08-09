@@ -10,16 +10,34 @@ CREATE TABLE `article` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
+-- `blog-db`.`member` definition
+
+CREATE TABLE `member` (
+                          `id` varchar(36) NOT NULL,
+                          `create_at` datetime(6) DEFAULT NULL,
+                          `ip` varchar(255) DEFAULT NULL,
+                          `login_id` varchar(255) DEFAULT NULL,
+                          `login_pw` varchar(255) DEFAULT NULL,
+                          `nickname` varchar(100) NOT NULL,
+                          `type` enum('GUEST','MEMBER') DEFAULT NULL,
+                          PRIMARY KEY (`id`),
+                          UNIQUE KEY `UKhh9kg6jti4n1eoiertn2k6qsc` (`nickname`),
+                          UNIQUE KEY `UKnlyn40hq7vv0mejoshpeb1a6e` (`ip`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 -- `blog-db`.comment definition
 
 CREATE TABLE `comment` (
                            `id` varchar(36) NOT NULL,
                            `create_at` datetime(6) DEFAULT NULL,
-                           `author` varchar(100) NOT NULL,
                            `content` varchar(5000) NOT NULL,
                            `parent_id` varchar(36) DEFAULT NULL,
-                           `parent_type` enum('ARTICLE') DEFAULT NULL,
-                           PRIMARY KEY (`id`)
+                           `parent_type` enum('ARTICLE','COMMENT') DEFAULT NULL,
+                           `author_id` varchar(36) DEFAULT NULL,
+                           PRIMARY KEY (`id`),
+                           KEY `FK2bam3knj13ijq6eiskx55xtqh` (`author_id`),
+                           CONSTRAINT `FK2bam3knj13ijq6eiskx55xtqh` FOREIGN KEY (`author_id`) REFERENCES `member` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 

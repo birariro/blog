@@ -1,9 +1,8 @@
 package com.birairo.blog.member.service.support;
 
-import com.birairo.blog.member.domain.Guest;
+import com.birairo.blog.member.domain.Member;
 import com.birairo.blog.member.service.CreateIfNecessaryGuestLoad;
 import com.birairo.blog.member.service.NicknameGenerate;
-import com.birairo.blog.member.service.support.repository.GuestRepository;
 import com.birairo.blog.vo.Nickname;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,19 +14,19 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CreateIfNecessaryGuestLoader implements CreateIfNecessaryGuestLoad {
 
-    private final GuestRepository guestRepository;
+    private final MemberRepository repository;
     private final NicknameGenerate nicknameGenerator;
 
     @Transactional
-    public Guest getGuest(String ip) {
+    public Member getGuest(String ip) {
 
-        if (guestRepository.existsByIp(ip)) {
-            return guestRepository.findFirstByIp(ip)
+        if (repository.existsByIp(ip)) {
+            return repository.findFirstByIp(ip)
                     .orElseThrow();
         }
 
         Nickname nickname = nicknameGenerator.generateNickname();
-        Guest guest = guestRepository.save(new Guest(ip, nickname));
+        Member guest = repository.save(Member.ofGuest(ip, nickname));
 
         log.info(String.format("new create guest nickname: ", nickname));
         return guest;

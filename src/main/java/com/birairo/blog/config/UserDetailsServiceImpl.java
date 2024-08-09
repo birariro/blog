@@ -1,7 +1,7 @@
 package com.birairo.blog.config;
 
 import com.birairo.blog.member.domain.Member;
-import com.birairo.blog.member.service.support.repository.MemberRepository;
+import com.birairo.blog.member.service.support.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

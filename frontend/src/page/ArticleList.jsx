@@ -18,7 +18,7 @@ const ArticleList = () => {
                 {/*<h1>블로그 게시글</h1>*/}
             </div>
             <div className="article-list">
-                {articles.map(article => (
+                {articles && articles.map(article => (
                     <Card key={article.id} article={article}/>
                 ))}
             </div>

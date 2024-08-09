@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
     private final UserDetailsServiceImpl userDetailsService;
@@ -32,6 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String jwt = null;
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+
             jwt = authorizationHeader.substring(7);
             username = tokenGenerator.getUsernameFromToken(jwt);
         }
@@ -46,6 +49,7 @@ public class JwtFilter extends OncePerRequestFilter {
                         .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
+            log.info("username: {} Authorization 인증 실패", username);
         }
 
         chain.doFilter(request, response);

@@ -1,6 +1,7 @@
 package com.birairo.blog.stroage.controller;
 
 import com.birairo.blog.stroage.service.StorageAdapter;
+import com.birairo.blog.stroage.service.Upload;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,14 +27,9 @@ public class StorageController {
     @PostMapping(value = "/storage/upload", consumes = "multipart/form-data")
     public ResponseEntity upload(@RequestParam MultipartFile file) {
 
-        //FileKey upload = storageAdapter.upload(file);
-//        Map<String, String> url = Map.of(
-//                "url", upload.value()
-//        );
-        
-        //todo aws s3생성후 연결
+        Upload upload = storageAdapter.upload(file);
         Map<String, String> url = Map.of(
-                "url", "https://blog.kakaocdn.net/dn/ruBue/btsBGjW0TQX/yGPTMdUQOfSHaUk4kAqKd1/img.png"
+                "url", upload.url()
         );
         return ResponseEntity.ok().body(url);
     }

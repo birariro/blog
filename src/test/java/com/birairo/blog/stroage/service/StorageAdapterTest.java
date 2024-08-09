@@ -48,10 +48,11 @@ class StorageAdapterTest {
 
         this.fakeMockAmazonS3 = new FakeMockAmazonS3();
         AmazonS3 amazonS3 = fakeMockAmazonS3.amazonS3();
+        String url = "https://test.com";
         String bucketName = "bucketname";
         amazonS3.createBucket(bucketName);
 
-        this.sut = new AmazonS3Adapter(amazonS3, idGenerator, bucketName, "dirpath");
+        this.sut = new AmazonS3Adapter(amazonS3, idGenerator, url, bucketName, "dirpath");
     }
 
     @AfterEach
@@ -62,10 +63,10 @@ class StorageAdapterTest {
     @Test
     void should_upload() {
 
-        FileKey fileKey = sut.upload(uploadFile);
+        Upload upload = sut.upload(uploadFile);
 
-        assertThat(fileKey).isNotNull();
-        assertThat(fileKey.value())
+        assertThat(upload).isNotNull();
+        assertThat(upload.value())
                 .isNotBlank()
                 .contains(idGenerator.generateId());
     }
@@ -73,10 +74,10 @@ class StorageAdapterTest {
     @Test
     void should_upload_to_download() throws IOException {
 
-        FileKey fileKey = sut.upload(uploadFile);
-        Download DownloadFile = sut.download(fileKey);
+        Upload upload = sut.upload(uploadFile);
+        Download DownloadFile = sut.download(upload);
 
-        assertThat(DownloadFile.name()).isEqualTo(fileKey.value());
+        assertThat(DownloadFile.name()).isEqualTo(upload.value());
         assertThat(DownloadFile.contentType()).isEqualTo(uploadFile.getContentType());
         assertThat(new String(DownloadFile.resource())).isEqualTo(new String(uploadFile.getBytes()));
     }

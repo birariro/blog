@@ -1,7 +1,7 @@
 package com.birairo.blog.member.service;
 
-import com.birairo.blog.member.domain.Guest;
+import com.birairo.blog.member.domain.Member;
 
 public interface CreateIfNecessaryGuestLoad {
-    Guest getGuest(String ip);
+    Member getGuest(String ip);
 }
