@@ -1,28 +1,39 @@
-import React, {useCallback, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import React, {useCallback, useEffect, useState} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import config from "../api/config";
 import {fetchWithAuth} from "../api/api";
 
-const CreateArticle = () => {
+const EditArticle = () => {
     const [title, setTitle] = useState('');
     const [tags, setTags] = useState([]);
     const [content, setContent] = useState('');
     const [currentTag, setCurrentTag] = useState('');
     const navigate = useNavigate();
+    const {id} = useParams();
+
+    useEffect(() => {
+        fetchWithAuth(`/article/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                setTitle(data.title);
+                setTags(data.tags || []);
+                setContent(data.content);
+            });
+    }, [id]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        fetchWithAuth(`/article`, {
-            method: 'POST',
+        fetchWithAuth(`/article/${id}`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({title, content, tags}),
         })
             .then(response => {
-                if (response.status === 201) {
-                    navigate('/')
+                if (response.ok) {
+                    navigate(`/article/${id}`)
                 } else {
                     throw new Error(`요청 실패: 상태 코드 ${response.status}`);
                 }
@@ -113,12 +124,10 @@ const CreateArticle = () => {
                         </div>
                     </div>
                 </div>
-                <button type="submit" className="submit-button">게시하기</button>
+                <button type="submit" className="submit-button">수정하기</button>
             </form>
         </div>
     );
 };
 
-export default CreateArticle;
-
-
+export default EditArticle;
