@@ -200,6 +200,34 @@ header {
     text-decoration: underline;
 }
 
+/* Code block styles */
+.article-content pre {
+    background-color: #f6f8fa;
+    border-radius: 6px;
+    padding: 16px;
+    overflow: auto;
+}
+
+.article-content code {
+    font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 85%;
+    padding: 0.2em 0.4em;
+    margin: 0;
+    background-color: rgba(27, 31, 35, 0.05);
+    border-radius: 3px;
+}
+
+.article-content pre > code {
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    font-size: 100%;
+    word-break: normal;
+    white-space: pre;
+    background: transparent;
+    border: 0;
+}
+
 .edit-button {
     background-color: #0071e3;
     color: #ffffff;
@@ -344,6 +372,7 @@ header {
     color: #86868b;
     padding: 40px 0;
 }
+
 .container {
     margin: 0 auto;
     padding: 40px 20px;
