@@ -6,13 +6,13 @@ import Article from './page/Article';
 import CreateArticle from "./page/CreateArticle";
 import LoginForm from "./page/LoginForm";
 import EditArticle from "./page/EditArticle";
+import {isLogin, logout} from "./common/Information";
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem('jwt');
-        setIsLoggedIn(!!token);
+        setIsLoggedIn(isLogin());
     }, []);
 
     const handleLogin = () => {
@@ -20,7 +20,7 @@ const App = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('jwt');
+        logout();
         setIsLoggedIn(false);
     };
 
@@ -44,8 +44,6 @@ const App = () => {
                         <Route path="/create" element={<CreateArticle/>}/>
                         <Route path="/login" element={<LoginForm onLogin={handleLogin}/>}/>
                         <Route path="/edit-article/:id" element={<EditArticle/>}/>
-
-
                     </Routes>
                 </div>
             </div>

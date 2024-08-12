@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import CommentList from '../component/CommentList';
 import CommentForm from '../component/CommentForm';
-import ReactMarkdown from 'react-markdown';
 import {fetchWithAuth} from "../api/api";
+import {isLogin} from "../common/Information";
 
 const Article = () => {
     const [article, setArticle] = useState(null);
@@ -16,9 +18,7 @@ const Article = () => {
             .then(response => response.json())
             .then(data => setArticle(data));
 
-        // Check if JWT token exists in localStorage
-        const token = localStorage.getItem('jwt');
-        setIsLoggedIn(!!token);
+        setIsLoggedIn(isLogin());
     }, [id]);
 
     const handleEdit = () => {
@@ -42,7 +42,28 @@ const Article = () => {
                     </div>
                 </header>
                 <div className="article-content">
-                    <ReactMarkdown>{article.content}</ReactMarkdown>
+                    <ReactMarkdown
+                        components={{
+                            code({node, inline, className, children, ...props}) {
+                                const match = /language-(\w+)/.exec(className || '');
+                                return !inline && match ? (
+                                    <SyntaxHighlighter
+                                        language={match[1]}
+                                        PreTag="div"
+                                        {...props}
+                                    >
+                                        {String(children).replace(/\n$/, '')}
+                                    </SyntaxHighlighter>
+                                ) : (
+                                    <code className={className} {...props}>
+                                        {children}
+                                    </code>
+                                );
+                            },
+                        }}
+                    >
+                        {article.content}
+                    </ReactMarkdown>
                 </div>
 
                 {isLoggedIn && (
