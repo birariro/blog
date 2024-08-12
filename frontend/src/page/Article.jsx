@@ -5,7 +5,6 @@ import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import CommentList from '../component/CommentList';
 import CommentForm from '../component/CommentForm';
 import {fetchWithAuth} from "../api/api";
-import {isLogin} from "../common/Information";
 
 const Article = () => {
     const [article, setArticle] = useState(null);
@@ -18,7 +17,9 @@ const Article = () => {
             .then(response => response.json())
             .then(data => setArticle(data));
 
-        setIsLoggedIn(isLogin());
+        // Check if JWT token exists in localStorage
+        const token = localStorage.getItem('jwt');
+        setIsLoggedIn(!!token);
     }, [id]);
 
     const handleEdit = () => {
@@ -58,6 +59,13 @@ const Article = () => {
                                     <code className={className} {...props}>
                                         {children}
                                     </code>
+                                );
+                            },
+                            blockquote({node, children, ...props}) {
+                                return (
+                                    <blockquote className="blockquote" {...props}>
+                                        {children}
+                                    </blockquote>
                                 );
                             },
                         }}
