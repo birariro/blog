@@ -32,10 +32,13 @@ const App = () => {
                         {isLoggedIn ? (
                             <>
                                 <Link to="/create" className="create-button">새로운 게시글 작성</Link>
+                                <Link to="/" className="create-button">홈</Link>
                                 <button onClick={handleLogout} className="logout-button">로그아웃</button>
                             </>
                         ) : (
-                            <Link></Link>
+                            <>
+                                <Link to="/" className="create-button">홈</Link>
+                            </>
                         )}
                     </header>
                     <Routes>

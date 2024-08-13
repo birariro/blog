@@ -3,7 +3,7 @@
 CREATE TABLE `article` (
                            `id` varchar(36) NOT NULL,
                            `create_at` datetime(6) DEFAULT NULL,
-                           `content` varchar(5000) NOT NULL,
+                           `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                            `title` varchar(100) NOT NULL,
                            PRIMARY KEY (`id`),
                            UNIQUE KEY `UK571gx7oqo5xpmgocegaidlcu9` (`title`)
