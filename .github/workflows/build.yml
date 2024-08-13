@@ -13,6 +13,7 @@ jobs:
     steps:
       - name: checkout depoly branch
         uses: actions/checkout@v4
+        working-directory: ./frontend
 
       - name: move frontend dir
         run: cd frontend
@@ -35,7 +36,7 @@ jobs:
 
       - name: ls frontend dir
         run: ls -al
-        
+
       - name: Install Dependencies
         run: npm install
 
