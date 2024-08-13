@@ -2,11 +2,72 @@ name: build with docker upload
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, deploy ]
 
 jobs:
 
-  build:
+  web-build:
+    if: ${{ !contains(github.event.head_commit.message, '[skip]') }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout depoly branch
+        uses: actions/checkout@v4
+
+      - name: move frontend dir
+        run: cd frontend
+
+      - name: get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+      - uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: pipeline upload web
+        uses: actions/upload-artifact@v1
+        with:
+          name: web
+          path: ./build
+
+  web-deploy:
+    needs: web-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: pipeline download web
+        uses: actions/download-artifact@v1
+        with:
+          name: web
+
+      - name: s3 upload
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws s3 cp \
+            --recursive \
+            --region ap-northeast-2 \
+            build s3://${{ secrets.AWS_S3_BUCKET_NAME }}
+
+      - name: CloudFront Invalidation
+        env:
+          CLOUD_FRONT_ID: ${{ secrets.AWS_CLOUDFRONT_ID}}
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id $CLOUD_FRONT_ID --paths /*
+
+  server-build:
     if: ${{ !contains(github.event.head_commit.message, '[skip]') }}
     runs-on: ubuntu-latest
 
@@ -41,8 +102,8 @@ jobs:
           name: dockerfile
           path: ./share/ci/Dockerfile
 
-  docker:
-    needs: build
+  dockerizing:
+    needs: server-build
     runs-on: ubuntu-latest
     steps:
 

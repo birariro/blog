@@ -9,12 +9,11 @@ public class HeaderInformation implements ClientInformation {
     @Override
     public String getIp(HttpServletRequest request) {
 
-        String[] headerTypes = {"X-Forwarded-For", "Proxy-Client-IP",
+        String[] HeaderCandidates = {"X-Forwarded-For", "Proxy-Client-IP",
                 "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"};
 
-        for (String headerType : headerTypes) {
-
-            String ip = request.getHeader(headerType);
+        for (String header : HeaderCandidates) {
+            String ip = request.getHeader(header);
             if (ip != null) {
                 return ip;
             }

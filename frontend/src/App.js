@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
+import {BrowserRouter as Router, Link, Route, Routes, useNavigate} from 'react-router-dom';
 
 import ArticleList from './page/ArticleList';
 import Article from './page/Article';
@@ -24,20 +24,35 @@ const App = () => {
         setIsLoggedIn(false);
     };
 
+    const HomeButton = () => {
+        const navigate = useNavigate();
+        return (
+            <img
+                src="/logo192.png"
+                alt="Home"
+                onClick={() => navigate('/')}
+                style={{
+                    cursor: 'pointer',
+                    height: '40px',
+                    marginRight: 'auto'
+                }}
+            />
+        );
+    };
+
     return (
         <Router>
             <div className="board">
                 <div className="app">
                     <header>
+                        <HomeButton/>
                         {isLoggedIn ? (
                             <>
                                 <Link to="/create" className="create-button">새로운 게시글 작성</Link>
-                                <Link to="/" className="create-button">홈</Link>
                                 <button onClick={handleLogout} className="logout-button">로그아웃</button>
                             </>
                         ) : (
                             <>
-                                <Link to="/" className="create-button">홈</Link>
                             </>
                         )}
                     </header>
