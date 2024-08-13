@@ -12,13 +12,10 @@ jobs:
     defaults:
       run:
         working-directory: ./frontend
+
     steps:
       - name: checkout depoly branch
         uses: actions/checkout@v4
-      
-
-      - name: ls frontend dir
-        run: ls -al
 
       - name: get npm cache directory
         id: npm-cache-dir
@@ -33,8 +30,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: ls frontend dir
-        run: ls -al
 
       - name: Install Dependencies
         run: npm install
