@@ -17,10 +17,14 @@ jobs:
       - name: move frontend dir
         run: cd frontend
 
+      - name: ls frontend dir
+        run: ls -al
+
       - name: get npm cache directory
         id: npm-cache-dir
         run: |
           echo "::set-output name=dir::$(npm config get cache)"
+
       - uses: actions/cache@v3
         id: npm-cache
         with:
@@ -29,6 +33,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - name: ls frontend dir
+        run: ls -al
+        
       - name: Install Dependencies
         run: npm install
 
@@ -67,73 +74,73 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id $CLOUD_FRONT_ID --paths /*
 
-  server-build:
-    if: ${{ !contains(github.event.head_commit.message, '[skip]') }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: greeting
-        run: echo Run CI
-
-      - name: checkout depoly branch
-        uses: actions/checkout@v4
-
-      - name: setup JAVA 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'adopt'
-
-      - name: grant executive permission to Gradlew
-        run: chmod +x gradlew
-
-      - name: build jar
-        run: ./gradlew clean build --exclude-task test
-
-      - name: pipeline upload jar
-        uses: actions/upload-artifact@v1
-        with:
-          name: build
-          path: ./build
-
-      - name: pipeline upload dockerfile
-        uses: actions/upload-artifact@v1
-        with:
-          name: dockerfile
-          path: ./share/ci/Dockerfile
-
-  dockerizing:
-    needs: server-build
-    runs-on: ubuntu-latest
-    steps:
-
-      - name: pipeline download jar
-        uses: actions/download-artifact@v1
-        with:
-          name: build
-
-      - name: pipeline download dockerfile
-        uses: actions/download-artifact@v1
-        with:
-          name: dockerfile
-
-      - name: echo build/libs dir
-        run: ls -al ./build/libs
-
-      - name: move dockerfile
-        run: mv dockerfile/Dockerfile .
-
-      - name: Docker Image Build
-        run: docker build -t ${{ secrets.DOCKER_HUB_ID }}/${{ secrets.DOCKER_HUB_REPOSITORY }} .
-
-      - name: Docker Hub Login
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_ID }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-
-      - name: Push Docker Image From DockerHub
-        run: docker push ${{ secrets.DOCKER_HUB_ID }}/${{ secrets.DOCKER_HUB_REPOSITORY }}
+#  server-build:
+#    if: ${{ !contains(github.event.head_commit.message, '[skip]') }}
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: greeting
+#        run: echo Run CI
+#
+#      - name: checkout depoly branch
+#        uses: actions/checkout@v4
+#
+#      - name: setup JAVA 17
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '17'
+#          distribution: 'adopt'
+#
+#      - name: grant executive permission to Gradlew
+#        run: chmod +x gradlew
+#
+#      - name: build jar
+#        run: ./gradlew clean build --exclude-task test
+#
+#      - name: pipeline upload jar
+#        uses: actions/upload-artifact@v1
+#        with:
+#          name: build
+#          path: ./build
+#
+#      - name: pipeline upload dockerfile
+#        uses: actions/upload-artifact@v1
+#        with:
+#          name: dockerfile
+#          path: ./share/ci/Dockerfile
+#
+#  dockerizing:
+#    needs: server-build
+#    runs-on: ubuntu-latest
+#    steps:
+#
+#      - name: pipeline download jar
+#        uses: actions/download-artifact@v1
+#        with:
+#          name: build
+#
+#      - name: pipeline download dockerfile
+#        uses: actions/download-artifact@v1
+#        with:
+#          name: dockerfile
+#
+#      - name: echo build/libs dir
+#        run: ls -al ./build/libs
+#
+#      - name: move dockerfile
+#        run: mv dockerfile/Dockerfile .
+#
+#      - name: Docker Image Build
+#        run: docker build -t ${{ secrets.DOCKER_HUB_ID }}/${{ secrets.DOCKER_HUB_REPOSITORY }} .
+#
+#      - name: Docker Hub Login
+#        uses: docker/login-action@v2
+#        with:
+#          username: ${{ secrets.DOCKER_HUB_ID }}
+#          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+#
+#      - name: Push Docker Image From DockerHub
+#        run: docker push ${{ secrets.DOCKER_HUB_ID }}/${{ secrets.DOCKER_HUB_REPOSITORY }}
 
 #  deploy:
 #    needs: docker
