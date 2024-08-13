@@ -17,9 +17,6 @@ jobs:
         uses: actions/checkout@v4
       
 
-      - name: move frontend dir
-        run: cd frontend
-
       - name: ls frontend dir
         run: ls -al
 
