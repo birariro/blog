@@ -52,6 +52,9 @@ jobs:
         with:
           name: web
 
+      - name: echo
+        run: ls -al
+
       - name: aws upload credential
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -60,7 +63,7 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: s3 upload
-        run: aws s3 sync s3://${{ secrets.AWS_S3_BUCKET_NAME }} --acl public-read
+        run: aws s3 sync build/ s3://${{ secrets.AWS_S3_BUCKET_NAME }} --acl public-read
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
