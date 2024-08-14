@@ -32,25 +32,29 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String username = null;
         String jwt = null;
+        try {
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-
-            jwt = authorizationHeader.substring(7);
-            username = tokenGenerator.getUsernameFromToken(jwt);
-        }
-
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-
-            if (tokenGenerator.validateToken(jwt)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                jwt = authorizationHeader.substring(7);
+                username = tokenGenerator.getUsernameFromToken(jwt);
             }
-            log.info("username: {} Authorization 인증 실패", username);
+
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+
+                if (tokenGenerator.validateToken(jwt)) {
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    usernamePasswordAuthenticationToken
+                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                }
+                log.info("username: {} Authorization 인증 실패", username);
+            }
+        } catch (RuntimeException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
+
 
         chain.doFilter(request, response);
     }

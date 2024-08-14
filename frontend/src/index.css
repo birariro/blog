@@ -172,7 +172,7 @@ header {
 
 .article-content {
     font-size: 18px;
-    line-height: 1.6;
+    /*line-height: 1.6;*/
     color: #1d1d1f;
 }
 
@@ -188,7 +188,7 @@ header {
 }
 
 .article-content p {
-    margin-bottom: 20px;
+    /*margin-bottom: 20px;*/
 }
 
 .article-content a {
@@ -202,10 +202,9 @@ header {
 
 /* Code block styles */
 .article-content pre {
-    background-color: #f6f8fa;
     border-radius: 6px;
-    padding: 16px;
     overflow: auto;
+    margin-bottom: 16px;
 }
 
 .article-content code {
@@ -226,6 +225,21 @@ header {
     white-space: pre;
     background: transparent;
     border: 0;
+}
+
+.blockquote {
+    margin: 0 0 16px;
+    padding: 0 1em;
+    color: #6a737d;
+    border-left: 0.25em solid #dfe2e5;
+}
+
+.blockquote > :first-child {
+    margin-top: 0;
+}
+
+.blockquote > :last-child {
+    margin-bottom: 0;
 }
 
 .edit-button {
@@ -293,7 +307,7 @@ header {
 
 .comment-content {
     font-size: 14px;
-    line-height: 1.4;
+    /*line-height: 1.4;*/
     color: #1d1d1f;
     margin-bottom: 12px;
 }

@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "가죽 대신 남기는 블로그",
+  "name": "가죽 대신 남기는 블로그",
   "icons": [
     {
       "src": "favicon.ico",

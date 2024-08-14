@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import config from "../api/config";
+import {login} from "../common/Information";
 
 const LoginForm = ({onLogin}) => {
     const [username, setUsername] = useState('');
@@ -23,7 +24,7 @@ const LoginForm = ({onLogin}) => {
 
             if (response.ok) {
                 const data = await response.json();
-                localStorage.setItem('jwt', data.token);
+                login(data.token)
                 onLogin();
                 navigate('/');
             } else {

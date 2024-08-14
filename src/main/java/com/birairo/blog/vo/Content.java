@@ -17,7 +17,8 @@ import org.springframework.util.Assert;
 @ToString
 @EqualsAndHashCode
 public class Content {
-    @Column(name = "content", length = 5000, nullable = false)
+
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String value;
 
     public static Content of(String value) {

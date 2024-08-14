@@ -3,6 +3,7 @@ import {useNavigate, useParams} from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import config from "../api/config";
 import {fetchWithAuth} from "../api/api";
+import {Prism as SyntaxHighlighter} from "react-syntax-highlighter";
 
 const EditArticle = () => {
     const [title, setTitle] = useState('');
@@ -120,7 +121,33 @@ const EditArticle = () => {
                             required
                         />
                         <div className="preview">
-                            <ReactMarkdown>{content}</ReactMarkdown>
+                            <ReactMarkdown
+                                components={{
+                                    code({node, inline, className, children, ...props}) {
+                                        const match = /language-(\w+)/.exec(className || '');
+                                        return !inline && match ? (
+                                            <SyntaxHighlighter
+                                                language={match[1]}
+                                                PreTag="div"
+                                                {...props}
+                                            >
+                                                {String(children).replace(/\n$/, '')}
+                                            </SyntaxHighlighter>
+                                        ) : (
+                                            <code className={className} {...props}>
+                                                {children}
+                                            </code>
+                                        );
+                                    },
+                                    blockquote({node, children, ...props}) {
+                                        return (
+                                            <blockquote className="blockquote" {...props}>
+                                                {children}
+                                            </blockquote>
+                                        );
+                                    },
+                                }}
+                            >{content}</ReactMarkdown>
                         </div>
                     </div>
                 </div>
