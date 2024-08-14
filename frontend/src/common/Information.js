@@ -7,7 +7,7 @@ export const isLogin = async () => {
     }
 
     try {
-        const response = await fetch(`${config.API_BASE_URL}/token/${token}/valud`,
+        const response = await fetch(`${config.API_BASE_URL}/token/${token}/valid`,
             {
                 method: 'GET'
             }

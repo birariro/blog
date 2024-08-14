@@ -23,10 +23,7 @@ const Article = () => {
             .then(response => response.json())
             .then(data => setCount(data.count));
 
-        // eslint-disable-next-line no-unused-vars
-        async function loginCheck() {
-            setIsLoggedIn(await isLogin());
-        }
+        setIsLoggedIn(isLogin());
     }, [id]);
 
     const handleEdit = () => {
