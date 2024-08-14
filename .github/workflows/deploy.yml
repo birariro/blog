@@ -1,8 +1,8 @@
-name: build with docker upload
+name: deploy
 
 on:
   push:
-    branches: [ main, deploy ]
+    branches: [ main ]
 
 jobs:
 
@@ -137,9 +137,7 @@ jobs:
     needs: server-dockerizing
     runs-on: ubuntu-latest
     steps:
-      - name: deploy start
-        run: echo deploy start
-      - name: deploy server access
+      - name: deploy server access with deploy shell run
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.AWS_EC2_HOST }}

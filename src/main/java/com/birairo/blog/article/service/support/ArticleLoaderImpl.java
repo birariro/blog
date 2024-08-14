@@ -3,8 +3,11 @@ package com.birairo.blog.article.service.support;
 import com.birairo.blog.article.domain.Article;
 import com.birairo.blog.article.service.ArticleHeader;
 import com.birairo.blog.article.service.ArticleLoader;
+import com.birairo.blog.article.service.ArticleReadEvent;
+import com.birairo.blog.article.service.GreetingEvent;
 import com.birairo.blog.article.service.support.repository.ArticleRepository;
 import com.birairo.blog.common.NoSuchEntityException;
+import com.birairo.blog.event.Events;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,14 +25,19 @@ class ArticleLoaderImpl implements ArticleLoader {
     @Transactional(readOnly = true)
     public List<ArticleHeader> findArticleHeader() {
 
+        Events.raise(new GreetingEvent());
         List<Article> articles = repository.findAll();
         return articleToArticleHeader(articles);
     }
 
     @Transactional(readOnly = true)
     public Article findArticle(final UUID id) {
-        return repository.findByIdAndTags(id)
+
+        Article article = repository.findByIdAndTags(id)
                 .orElseThrow(() -> new NoSuchEntityException("not found article"));
+
+        Events.raise(new ArticleReadEvent(article));
+        return article;
     }
 
     private List<ArticleHeader> articleToArticleHeader(List<Article> articles) {

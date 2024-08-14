@@ -12,7 +12,11 @@ const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
-        setIsLoggedIn(isLogin());
+        // eslint-disable-next-line no-unused-vars
+        async function loginCheck() {
+            setIsLoggedIn(await isLogin());
+        }
+
     }, []);
 
     const handleLogin = () => {

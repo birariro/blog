@@ -35,10 +35,12 @@ decorator:
 logging:
   level:
     ROOT: INFO
-#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-#    org.springframework.orm: TRACE
-#    org.springframework.transaction: TRACE
-#    com.mysql.cj.jdbc: TRACE
+  #    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  #    org.springframework.orm: TRACE
+  #    org.springframework.transaction: TRACE
+  #    com.mysql.cj.jdbc: TRACE
+  file:
+    name: ./logs/blog.log
 
 springdoc:
   swagger-ui:
