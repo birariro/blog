@@ -1,26 +1,43 @@
 ## demo run
 
-``` 
+```shell
 docker compose -f compose.yml up --build --remove-orphans -d
 ```
 
-```
+```shell
 ./gradlew bootrun -P profile=demo   
 cd frontend && npm start
 ```
 
 ## deploy
 
+```
++---------+        +-------+      +-------------+      +-------------------+      
+| server  | ---->  | build | ---> | dockerizing | ---> | docker hub upload |    
++---------+        +-------+      +-------------+      +----------------_--+  
+     |                                                                    |>
+     | ---------------------------------------|                           |                      
+                                              |>                          |
+                         +----------+       +---------+    download       |
+                         |    s3    |       |   ec2   |  -----------------|   
+                         +----------+       +---------+             
+                               |>
+                               |                                 
++--------+         +-------+   | 
+|  web   | ---->   | build | - |
++--------+         +-------+                                            
+
+```
+
 ### backend
 
 #### application-secret
 
-```
+```yaml
 aws:
-    key:    
-        access: {s3 bucket access key}
-        secret: {s3 bucket private key}
-
+  key:
+    access: { s3 bucket access key }
+    secret: { s3 bucket private key }
 ```
 
 #### github action secrets
