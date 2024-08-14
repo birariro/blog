@@ -5,9 +5,11 @@ import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import CommentList from '../component/CommentList';
 import CommentForm from '../component/CommentForm';
 import {fetchWithAuth} from "../api/api";
+import {isLogin} from "../common/Information";
 
 const Article = () => {
     const [article, setArticle] = useState(null);
+    const [count, setCount] = useState(null);
     const {id} = useParams();
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -17,9 +19,14 @@ const Article = () => {
             .then(response => response.json())
             .then(data => setArticle(data));
 
-        // Check if JWT token exists in localStorage
-        const token = localStorage.getItem('jwt');
-        setIsLoggedIn(!!token);
+        fetchWithAuth(`/count/article/${id}`)
+            .then(response => response.json())
+            .then(data => setCount(data.count));
+
+        // eslint-disable-next-line no-unused-vars
+        async function loginCheck() {
+            setIsLoggedIn(await isLogin());
+        }
     }, [id]);
 
     const handleEdit = () => {
@@ -34,6 +41,7 @@ const Article = () => {
                 <header className="article-header">
                     <h1 className="article-title">{article.title}</h1>
                     <div className="article-meta">
+                        <span className="article-count">조회 : {count}</span>
                         <span className="article-date">{new Date(article.createdAt).toLocaleDateString()}</span>
                         <div className="article-tags">
                             {article.tags && article.tags.map((tag, index) => (

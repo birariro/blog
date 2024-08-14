@@ -52,3 +52,14 @@ CREATE TABLE `tag` (
                        KEY `FKhutavxkklg0b3kj7rmcnc9hvf` (`article_id`),
                        CONSTRAINT `FKhutavxkklg0b3kj7rmcnc9hvf` FOREIGN KEY (`article_id`) REFERENCES `article` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- `blog-db`.aggregate_count definition
+
+CREATE TABLE `aggregate_count` (
+                                   `id` varchar(36) NOT NULL,
+                                   `count` bigint DEFAULT NULL,
+                                   `parent_id` varchar(36) DEFAULT NULL,
+                                   `type` enum('READ','VISIT') DEFAULT NULL,
+                                   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
