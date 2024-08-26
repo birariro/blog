@@ -1,34 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
-import CommentList from '../component/CommentList';
-import CommentForm from '../component/CommentForm';
 import {fetchWithAuth} from "../api/api";
-import {isLogin} from "../common/Information";
 
 const Article = () => {
     const [article, setArticle] = useState(null);
-    const [count, setCount] = useState(null);
     const {id} = useParams();
-    const navigate = useNavigate();
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
         fetchWithAuth(`/article/${id}`)
             .then(response => response.json())
             .then(data => setArticle(data));
 
-        fetchWithAuth(`/count/article/${id}`)
-            .then(response => response.json())
-            .then(data => setCount(data.count));
-
-        setIsLoggedIn(isLogin());
     }, [id]);
 
-    const handleEdit = () => {
-        navigate(`/edit-article/${id}`);
-    };
 
     if (!article) return <div className="loading">Loading...</div>;
 
@@ -38,7 +24,6 @@ const Article = () => {
                 <header className="article-header">
                     <h1 className="article-title">{article.title}</h1>
                     <div className="article-meta">
-                        <span className="article-count">조회 : {count}</span>
                         <span className="article-date">{new Date(article.createdAt).toLocaleDateString()}</span>
                         <div className="article-tags">
                             {article.tags && article.tags.map((tag, index) => (
@@ -79,17 +64,12 @@ const Article = () => {
                     </ReactMarkdown>
                 </div>
 
-                {isLoggedIn && (
-                    <button onClick={handleEdit} className="edit-button">
-                        수정하기
-                    </button>
-                )}
             </article>
-            <section className="article-comments">
-                <h2 className="comments-title">Comments</h2>
-                <CommentList articleId={id}/>
-                <CommentForm articleId={id}/>
-            </section>
+            {/*<section className="article-comments">*/}
+            {/*    <h2 className="comments-title">Comments</h2>*/}
+            {/*    <CommentList articleId={id}/>*/}
+            {/*    <CommentForm articleId={id}/>*/}
+            {/*</section>*/}
         </div>
     );
 };

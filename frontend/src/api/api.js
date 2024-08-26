@@ -1,28 +1,10 @@
 import config from './config';
 
 export const fetchWithAuth = async (url, options = {}) => {
-    const token = localStorage.getItem('jwt');
-
-    let headers = {
-        ...options.headers,
-    };
-
-    if (token !== null && token !== undefined && token.length > 0) {
-        headers = {
-            ...headers,
-            'Authorization': `Bearer ${token}`,
-        };
-    }
 
     const response = await fetch(`${config.API_BASE_URL}${url}`, {
-        ...options,
-        headers,
+        ...options
     });
-
-    if (response.status === 401) {
-        localStorage.removeItem('jwt');
-        throw new Error('Unauthorized');
-    }
 
     return response;
 };
