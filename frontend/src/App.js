@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {BrowserRouter as Router, Link, Route, Routes, useNavigate} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Routes, useNavigate} from 'react-router-dom';
 
 import ArticleList from './page/ArticleList';
 import Article from './page/Article';
-import CreateArticle from "./page/CreateArticle";
-import LoginForm from "./page/LoginForm";
-import EditArticle from "./page/EditArticle";
+
 import {isLogin, logout} from "./common/Information";
 
 const App = () => {
@@ -46,22 +44,10 @@ const App = () => {
                 <div className="app">
                     <header>
                         <HomeButton/>
-                        {isLoggedIn ? (
-                            <>
-                                <Link to="/create" className="create-button">새로운 게시글 작성</Link>
-                                <button onClick={handleLogout} className="logout-button">로그아웃</button>
-                            </>
-                        ) : (
-                            <>
-                            </>
-                        )}
                     </header>
                     <Routes>
                         <Route exact path="/" element={<ArticleList/>}/>
                         <Route path="/article/:id" element={<Article/>}/>
-                        <Route path="/create" element={<CreateArticle/>}/>
-                        <Route path="/login" element={<LoginForm onLogin={handleLogin}/>}/>
-                        <Route path="/edit-article/:id" element={<EditArticle/>}/>
                     </Routes>
                 </div>
             </div>

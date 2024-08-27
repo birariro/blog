@@ -1,0 +1,13 @@
+{
+  "name": "your-project-name",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.637.0",
+    "@aws-sdk/lib-dynamodb": "^3.637.0",
+    "@notionhq/client": "^2.2.15",
+    "dotenv": "^16.4.5",
+    "notion-to-md": "^3.1.1"
+  }
+}
