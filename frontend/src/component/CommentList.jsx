@@ -1,13 +1,11 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import Comment from './Comment';
-import ResponseToJson from "../api/ApiWapper";
-import {fetchWithAuth} from "../api/api";
+import {API} from "../api/api";
 
 const CommentList = ({articleId}) => {
     const [comments, setComments] = useState([]);
     const fetchComments = useCallback(() => {
-        fetchWithAuth(`/article/${articleId}/comment`)
-            .then(response => ResponseToJson(response))
+        API(`/article/${articleId}/comment`)
             .then(data => {
                 if (data.comments) setComments(data.comments);
             })
@@ -22,7 +20,7 @@ const CommentList = ({articleId}) => {
 
 
     const saveComment = (commentId, content) => {
-        fetchWithAuth(`/comment/${commentId}/comment`, {
+        API(`/comment/${commentId}/comment`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

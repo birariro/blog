@@ -2,19 +2,16 @@ import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
-import {fetchWithAuth} from "../api/api";
+import {fetchArticle} from "../api";
 
 const Article = () => {
     const [article, setArticle] = useState(null);
     const {id} = useParams();
 
     useEffect(() => {
-        fetchWithAuth(`/article/${id}`)
-            .then(response => response.json())
+        fetchArticle(`${id}`)
             .then(data => setArticle(data));
-
     }, [id]);
-
 
     if (!article) return <div className="loading">Loading...</div>;
 
@@ -58,18 +55,19 @@ const Article = () => {
                                     </blockquote>
                                 );
                             },
+                            img({node, ...props}) {
+                                return (
+                                    <div className="image-container">
+                                        <img {...props} alt={props.alt || ''}/>
+                                    </div>
+                                );
+                            },
                         }}
                     >
                         {article.content}
                     </ReactMarkdown>
                 </div>
-
             </article>
-            {/*<section className="article-comments">*/}
-            {/*    <h2 className="comments-title">Comments</h2>*/}
-            {/*    <CommentList articleId={id}/>*/}
-            {/*    <CommentForm articleId={id}/>*/}
-            {/*</section>*/}
         </div>
     );
 };

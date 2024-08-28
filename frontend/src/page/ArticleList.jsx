@@ -1,14 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import Card from '../component/Card';
-import ResponseToJson from "../api/ApiWapper";
-import {fetchWithAuth} from "../api/api";
+import {fetchArticles} from "../api";
 
 const ArticleList = () => {
     const [articles, setArticles] = useState([]);
 
     useEffect(() => {
-        fetchWithAuth(`/article`)
-            .then(response => ResponseToJson(response))
+        fetchArticles()
             .then(data => setArticles(data));
     }, []);
 

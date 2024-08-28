@@ -1,26 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {BrowserRouter as Router, Route, Routes, useNavigate} from 'react-router-dom';
 
 import ArticleList from './page/ArticleList';
 import Article from './page/Article';
 
-import {isLogin, logout} from "./common/Information";
 
 const App = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    useEffect(() => {
-        setIsLoggedIn(isLogin());
-    }, []);
-
-    const handleLogin = () => {
-        setIsLoggedIn(true);
-    };
-
-    const handleLogout = () => {
-        logout();
-        setIsLoggedIn(false);
-    };
 
     const HomeButton = () => {
         const navigate = useNavigate();

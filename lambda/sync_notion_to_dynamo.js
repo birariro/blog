@@ -55,7 +55,7 @@ async function getArticleFromNotionDatabase() {
         },
         sorts: [
             {
-                property: "Created time",
+                property: "releaseAt",
                 direction: "descending",
             },
         ],
@@ -68,56 +68,54 @@ async function syncArticles() {
 
     const articles = await getArticleFromNotionDatabase()
 
-    var entitys = []
+    const modifyTitles = [];
     for (const article of articles) {
+
+        //console.log("article: " + JSON.stringify(article))
         const id = article.id;
-        const createdAt = article.created_time;
+        const createdAt = article.properties.releaseAt.rich_text[0].plain_text;
         const updatedAt = article.last_edited_time;
         const title = article.properties.article.title[0].plain_text;
 
-        const mdblocks = await n2m.pageToMarkdown(article.id);
-        const mdString = n2m.toMarkdownString(mdblocks);
-        const content = mdString.parent;
+        const persistArticle = await getArticleFromDynamoDatabase(id);
 
-        const entity = {
-            id: id,
-            createdAt: createdAt,
-            updatedAt: updatedAt,
-            title: title,
-            content: content,
-        };
-        entitys.push(entity);
+        if (newArticle(persistArticle) || modifyArticle(updatedAt, persistArticle)) {
 
-    }
-
-    const newArticleTitles = [];
-    const modifyArticleTitles = [];
-    for (const entity of entitys) {
-
-        console.log("search: " + entity.title)
-
-        const persistArticle = await getArticleFromDynamoDatabase(entity.id)
-        if (newArticle(persistArticle)) {
-            newArticleTitles.push(entity.title);
-            await saveArticleFromDynamoDatabase(entity);
-        } else if (modifyArticle(entity, persistArticle)) {
-            modifyArticleTitles.push(entity.title);
-            await saveArticleFromDynamoDatabase(entity);
+            console.log(`modify article: ${title}`)
+            const content = await notionPageToMarkdown(id);
+            await saveArticleFromDynamoDatabase(
+                {
+                    id: id,
+                    createdAt: createdAt,
+                    updatedAt: updatedAt,
+                    title: title,
+                    content: content,
+                }
+            );
+            modifyTitles.push(title);
         }
     }
+
+
     return {
-        new: newArticleTitles,
-        modify: modifyArticleTitles
+        modify: modifyTitles
     };
 
+}
+
+async function notionPageToMarkdown(id) {
+    const mdblocks = await n2m.pageToMarkdown(id);
+    const mdString = n2m.toMarkdownString(mdblocks);
+    const content = mdString.parent;
+    return content;
 }
 
 function newArticle(persistArticle) {
     return persistArticle === undefined || persistArticle.Item === undefined
 }
 
-function modifyArticle(entity, persistArticle) {
-    return persistArticle.Item.updatedAt != entity.updatedAt
+function modifyArticle(updatedAt, persistArticle) {
+    return persistArticle.Item.updatedAt !== updatedAt
 }
 
 export const handler = async (event, context) => {

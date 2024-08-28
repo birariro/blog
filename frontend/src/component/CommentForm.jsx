@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {fetchWithAuth} from "../api/api";
+import {API} from "../api/api";
 
 const CommentForm = ({articleId}) => {
     const [content, setContent] = useState('');
@@ -8,7 +8,7 @@ const CommentForm = ({articleId}) => {
         e.preventDefault();
         if (!content.trim()) return;
 
-        fetchWithAuth(`/article/${articleId}/comment`, {
+        API(`/article/${articleId}/comment`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
