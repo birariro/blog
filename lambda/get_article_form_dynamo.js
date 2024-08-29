@@ -28,6 +28,7 @@ export const handler = async (event, context) => {
 
                 body = {
                     id: body.Item.id,
+                    tags: body.Item.tags,
                     title: body.Item.title,
                     content: body.Item.content,
                     createdAt: body.Item.createdAt,

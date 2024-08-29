@@ -36,6 +36,18 @@ header {
     border-bottom: 1px solid #d2d2d7;
 }
 
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20vh; /* 전체 화면 높이 */
+}
+
+.loading-gif {
+    max-width: 300px; /* GIF 크기 조절 */
+    height: auto;
+}
+
 .article-list-container {
     position: relative;
 }

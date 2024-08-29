@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Card from '../component/Card';
 import {fetchArticles} from "../api";
+import Loading from "../component/Loading";
 
 const ArticleList = () => {
     const [articles, setArticles] = useState([]);
@@ -10,6 +11,7 @@ const ArticleList = () => {
             .then(data => setArticles(data));
     }, []);
 
+    if (!articles) return <Loading/>;
     return (
         <div className="article-list-container">
             <div className="article-list-header">

@@ -35,6 +35,7 @@ async function saveArticleFromDynamoDatabase(article) {
             TableName: tableName,
             Item: {
                 id: article.id,
+                tags: article.tags,
                 title: article.title,
                 content: article.content,
                 createdAt: article.createdAt,
@@ -71,8 +72,10 @@ async function syncArticles() {
     const modifyTitles = [];
     for (const article of articles) {
 
-        //console.log("article: " + JSON.stringify(article))
+        console.log("article: " + JSON.stringify(article))
+
         const id = article.id;
+        const tags = article.properties.tags.multi_select.map(item => item.name);
         const createdAt = article.properties.releaseAt.rich_text[0].plain_text;
         const updatedAt = article.last_edited_time;
         const title = article.properties.article.title[0].plain_text;
@@ -86,6 +89,7 @@ async function syncArticles() {
             await saveArticleFromDynamoDatabase(
                 {
                     id: id,
+                    tags: tags,
                     createdAt: createdAt,
                     updatedAt: updatedAt,
                     title: title,
@@ -102,6 +106,7 @@ async function syncArticles() {
     };
 
 }
+
 
 async function notionPageToMarkdown(id) {
     const mdblocks = await n2m.pageToMarkdown(id);

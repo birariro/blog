@@ -3,6 +3,7 @@ import {useParams} from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {fetchArticle} from "../api";
+import Loading from "../component/Loading";
 
 const Article = () => {
     const [article, setArticle] = useState(null);
@@ -13,7 +14,7 @@ const Article = () => {
             .then(data => setArticle(data));
     }, [id]);
 
-    if (!article) return <div className="loading">Loading...</div>;
+    if (!article) return <Loading/>;
 
     return (
         <div className="container">

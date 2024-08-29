@@ -3,11 +3,9 @@ import {BrowserRouter as Router, Route, Routes, useNavigate} from 'react-router-
 
 import ArticleList from './page/ArticleList';
 import Article from './page/Article';
-
+import MouseFollower from "./component/MouseFollower";
 
 const App = () => {
-
-
     const HomeButton = () => {
         const navigate = useNavigate();
         return (
@@ -27,7 +25,9 @@ const App = () => {
     return (
         <Router>
             <div className="board">
+                <MouseFollower/>
                 <div className="app">
+
                     <header>
                         <HomeButton/>
                     </header>
