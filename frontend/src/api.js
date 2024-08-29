@@ -31,7 +31,7 @@ export const fetchArticle = async (id = {}) => {
     if (isDemo()) {
         return articles[id];
     }
-    return API(`/article${id}`)
+    return API(`/article/${id}`)
 }
 
 export const API = async (url = {}) => {
