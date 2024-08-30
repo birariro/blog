@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {BrowserRouter as Router, Route, Routes, useNavigate} from 'react-router-dom';
+import React from 'react';
+import {Route, Routes, useNavigate} from 'react-router-dom';
 
 import ArticleList from './page/ArticleList';
 import Article from './page/Article';
@@ -22,42 +22,27 @@ const HomeButton = () => {
 };
 
 const App = () => {
-    const [showParty, setShowParty] = useState(false);
-
     return (
-
         <div className="board">
             <div className="app">
-
                 <header>
                     <div className="header-left">
-                        <Router>
-                            <HomeButton/>
-                        </Router>
+                        <HomeButton/>
                     </div>
 
                     <div className="header-center"></div>
 
                     <div className="header-right">
-                        <Toggle showParty={showParty} setShowParty={setShowParty}/>
+                        <Toggle/>
                     </div>
                 </header>
 
-                {showParty && (
-                    <Party/>
-                )}
-
-                {!showParty && (
-                    <Router>
-                        <Routes>
-                            <Route exact path="/" element={<ArticleList/>}/>
-                            <Route path="/article/:id" element={<Article/>}/>
-                        </Routes>
-                    </Router>
-                )}
-
+                <Routes>
+                    <Route exact path="/" element={<ArticleList/>}/>
+                    <Route exact path="/party" element={<Party/>}/>
+                    <Route path="/article/:id" element={<Article/>}/>
+                </Routes>
             </div>
-
         </div>
     );
 };

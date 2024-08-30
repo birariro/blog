@@ -1,4 +1,4 @@
-name: Scheduled GET Request
+name: sync notion-db to dynamo-db
 
 on:
   schedule:

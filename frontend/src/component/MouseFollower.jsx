@@ -48,8 +48,8 @@ const MouseFollower = () => {
                 style={{
                     transition: 'all 3.0s ease-out, transform 0.1s ease-out',
                     position: 'absolute',
-                    left: `${position.x}px`,
-                    top: `${position.y}px`,
+                    left: `${position.x - 20}px`,
+                    top: `${position.y + 20}px`,
                     width: '30px',
                     height: 'auto',
                     transform: `translate(-50%, -50%) scaleX(${isFlipped ? -1 : 1})`,
