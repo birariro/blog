@@ -43,10 +43,10 @@ const MouseFollower = () => {
             {/*https://tenor.com/ko/view/bttv-rolling-cat-cute-pixelated-gif-17442480*/}
             <img
                 ref={imageRef}
-                src="/images/bttv-rolling-cat.gif"
+                src="/images/rolling-cat-pixel.gif"
                 alt="Mouse follower"
                 style={{
-                    transition: 'all 3.0s ease-out, transform 0.1s ease-out', // 두 개의 transition 속성을 조합',
+                    transition: 'all 3.0s ease-out, transform 0.1s ease-out',
                     position: 'absolute',
                     left: `${position.x}px`,
                     top: `${position.y}px`,

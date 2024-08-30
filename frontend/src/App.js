@@ -1,43 +1,64 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {BrowserRouter as Router, Route, Routes, useNavigate} from 'react-router-dom';
 
 import ArticleList from './page/ArticleList';
 import Article from './page/Article';
-import MouseFollower from "./component/MouseFollower";
+import Toggle from "./component/Toggle";
+import Party from "./page/Party";
+
+const HomeButton = () => {
+    const navigate = useNavigate();
+    return (
+        <img
+            src="/logo192.png"
+            alt="Home"
+            onClick={() => navigate('/')}
+            style={{
+                cursor: 'pointer',
+                height: '40px'
+            }}
+        />
+    );
+};
 
 const App = () => {
-    const HomeButton = () => {
-        const navigate = useNavigate();
-        return (
-            <img
-                src="/logo192.png"
-                alt="Home"
-                onClick={() => navigate('/')}
-                style={{
-                    cursor: 'pointer',
-                    height: '40px',
-                    marginRight: 'auto'
-                }}
-            />
-        );
-    };
+    const [showParty, setShowParty] = useState(false);
 
     return (
-        <Router>
-            <div className="board">
-                <MouseFollower/>
-                <div className="app">
 
-                    <header>
-                        <HomeButton/>
-                    </header>
-                    <Routes>
-                        <Route exact path="/" element={<ArticleList/>}/>
-                        <Route path="/article/:id" element={<Article/>}/>
-                    </Routes>
-                </div>
+        <div className="board">
+            <div className="app">
+
+                <header>
+                    <div className="header-left">
+                        <Router>
+                            <HomeButton/>
+                        </Router>
+                    </div>
+
+                    <div className="header-center"></div>
+
+                    <div className="header-right">
+                        <Toggle showParty={showParty} setShowParty={setShowParty}/>
+                    </div>
+                </header>
+
+                {showParty && (
+                    <Party/>
+                )}
+
+                {!showParty && (
+                    <Router>
+                        <Routes>
+                            <Route exact path="/" element={<ArticleList/>}/>
+                            <Route path="/article/:id" element={<Article/>}/>
+                        </Routes>
+                    </Router>
+                )}
+
             </div>
-        </Router>
+
+        </div>
     );
 };
 
