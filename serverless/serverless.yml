@@ -1,0 +1,65 @@
+org: birariro
+app: blog
+service: serverless
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-northeast-2
+  timeout: 30  # lambda timeout 30초
+  memorySize: 2048  # lambda memory size 2048 MB
+  environment:
+    DYNAMO_TABLE_NAME: ${self:custom.dynamoTableName}
+    NOTION_API_KEY: ${ssm:/notion/api_key}
+    NOTION_DATABASE_ID: ${ssm:/notion/database_id}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - arn:aws:dynamodb:ap-northeast-2:*:table/${self:custom.dynamoTableName}
+            - arn:aws:dynamodb:ap-northeast-2:*:table/${self:custom.dynamoTableName}/index/*
+functions:
+  syncNotionToDynamo:
+    handler: sync_notion_to_dynamo.handler
+    events:
+      - http:
+          path: sync
+          method: get
+
+  getArticleFromDynamo:
+    handler: get_article_from_dynamo.handler
+    events:
+      - http:
+          path: article/{id}
+          method: get
+      - http:
+          path: article
+          method: get
+
+
+resources:
+  Resources:
+    SyncArticleTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.dynamoTableName}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+custom:
+  dynamoTableName: blog_article_table
+
+plugins:
+  - serverless-offline
