@@ -5,7 +5,9 @@ const {DynamoDBDocumentClient, GetCommand, PutCommand} = require("@aws-sdk/lib-d
 
 const dotenv = require("dotenv");
 dotenv.config();
-const client = new DynamoDBClient({});
+const client = process.env.IS_OFFLINE === 'true'
+    ? new DynamoDBClient({endpoint: process.env.DYNAMODB_LOCAL_ENDPOINT})
+    : new DynamoDBClient({});
 const dynamo = DynamoDBDocumentClient.from(client);
 
 
@@ -43,6 +45,7 @@ async function saveArticleFromDynamoDatabase(article) {
                 id: article.id,
                 tags: article.tags,
                 title: article.title,
+                summary: article.summary,
                 content: article.content,
                 createdAt: article.createdAt,
                 updatedAt: article.updatedAt,
@@ -94,10 +97,11 @@ async function syncArticles() {
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 title: title,
+                summary: extractSummary(content),
                 content: content,
             });
             modifyTitles.push(title);
-        }else{
+        } else {
             console.debug("Non Persistence Article : " + title);
         }
     }
@@ -119,6 +123,13 @@ function newArticle(persistArticle) {
 
 function modifyArticle(updatedAt, persistArticle) {
     return persistArticle.Item.updatedAt !== updatedAt;
+}
+
+function extractSummary(content) {
+    const start = content.slice(0, 50);
+    const end = content.slice(-50);
+
+    return `${start}...${end}`;
 }
 
 module.exports.handler = async (event) => {

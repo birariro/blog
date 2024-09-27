@@ -1,7 +1,10 @@
 const {DynamoDBClient} = require("@aws-sdk/client-dynamodb");
 const {DynamoDBDocumentClient, GetCommand, ScanCommand} = require("@aws-sdk/lib-dynamodb");
 
-const client = new DynamoDBClient({});
+const client = process.env.IS_OFFLINE === 'true'
+    ? new DynamoDBClient({endpoint: process.env.DYNAMODB_LOCAL_ENDPOINT})
+    : new DynamoDBClient({});
+
 const dynamo = DynamoDBDocumentClient.from(client);
 const tableName = process.env.DYNAMO_TABLE_NAME;
 
@@ -14,52 +17,53 @@ module.exports.handler = async (event) => {
 
     try {
         if (event.httpMethod === "GET") {
-            switch (event.path) {
+            // Switch case 조건문에서 event.path를 비교하는 방식으로 변경
+            if (event.path === "/article") {
+                body = await dynamo.send(
+                    new ScanCommand({
+                        TableName: tableName,
+                        ProjectionExpression: "id, title, summary, createdAt",
+                    })
+                );
 
-                case "/article":
-                    body = await dynamo.send(
-                        new ScanCommand({
-                            TableName: tableName,
-                            ProjectionExpression: "id, title, createdAt",
-                        })
-                    );
+                // createdAt 기준으로 내림차순 정렬
+                body.Items.sort((a, b) => {
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
 
-                    body.Items.sort((a, b) => {
-                        return new Date(b.createdAt) - new Date(a.createdAt); // 내림차순 정렬
-                    });
-                    
-                    body = body.Items.map(item => {
-                        return {
-                            id: item.id,
-                            title: item.title,
-                            createdAt: item.createdAt, // 필요 시 createdAt 포함
-                        };
-                    });
-                    break;
-
-                case "/article/{id}":
-                    const id = event.pathParameters.id;
-                    body = await dynamo.send(
-                        new GetCommand({
-                            TableName: tableName,
-                            Key: {
-                                id: id,
-                            },
-                        })
-                    );
-
-                    body = {
-                        id: body.Item.id,
-                        tags: body.Item.tags,
-                        title: body.Item.title,
-                        content: body.Item.content,
-                        createdAt: body.Item.createdAt,
-                        updatedAt: body.Item.updatedAt,
+                body = body.Items.map(item => {
+                    return {
+                        id: item.id,
+                        title: item.title,
+                        summary: item.summary,
+                        createdAt: item.createdAt,
                     };
-                    break;
+                });
+            } else if (event.path.startsWith("/article/")) { // /article/{id} 형태 처리
+                const id = event.path.split("/")[2]; // URL에서 ID 추출
+                body = await dynamo.send(
+                    new GetCommand({
+                        TableName: tableName,
+                        Key: {
+                            id: id,
+                        },
+                    })
+                );
 
-                default:
-                    throw new Error(`Unsupported route: "${event.path}"`);
+                if (!body.Item) {
+                    throw new Error(`No item found for id: ${id}`);
+                }
+
+                body = {
+                    id: body.Item.id,
+                    tags: body.Item.tags,
+                    title: body.Item.title,
+                    content: body.Item.content,
+                    createdAt: body.Item.createdAt,
+                    updatedAt: body.Item.updatedAt,
+                };
+            } else {
+                throw new Error(`Unsupported route: "${event.path}"`);
             }
         } else {
             throw new Error(`Unsupported method: "${event.httpMethod}"`);

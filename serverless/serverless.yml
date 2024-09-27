@@ -8,9 +8,11 @@ provider:
   timeout: 30  # lambda timeout 30초
   memorySize: 2048  # lambda memory size 2048 MB
   environment:
+    DYNAMODB_LOCAL_ENDPOINT: http://localhost:8000
     DYNAMO_TABLE_NAME: ${self:custom.dynamoTableName}
     NOTION_API_KEY: ${ssm:/notion/api_key}
     NOTION_DATABASE_ID: ${ssm:/notion/database_id}
+    IS_OFFLINE: ${opt:stage, 'dev'}
   iam:
     role:
       statements:
@@ -59,7 +61,18 @@ resources:
         BillingMode: PAY_PER_REQUEST
 
 custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+    seed: false
   dynamoTableName: blog_article_table
 
 plugins:
   - serverless-offline
+  - serverless-dynamodb-local

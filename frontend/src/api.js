@@ -17,7 +17,7 @@ articles.push({
 
 function isDemo() {
     let baseUrl = config.API_BASE_URL;
-    return baseUrl === 'http://localhost';
+    return baseUrl === 'demo';
 }
 
 export const fetchArticles = async () => {
