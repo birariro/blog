@@ -39,6 +39,7 @@ jobs:
           name: frontend
           path: ./frontend/build
 
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -47,6 +48,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: frontend
+
+      - name: ls
+        run: ls -al
 
       - name: aws CLI credential Registration
         uses: aws-actions/configure-aws-credentials@v4
