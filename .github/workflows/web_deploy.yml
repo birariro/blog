@@ -48,9 +48,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: frontend
+          path: ./frontend
 
-      - name: ls
+      - name: ls root
         run: ls -al
+
+      - name: ls frontent dir
+        run: ls frontend -al
 
       - name: aws CLI credential Registration
         uses: aws-actions/configure-aws-credentials@v4

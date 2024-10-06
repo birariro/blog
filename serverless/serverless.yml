@@ -41,9 +41,27 @@ functions:
       - http:
           path: article/{id}
           method: get
+          cors:
+            origin: ${self:custom.webDomain}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+            allowCredentials: false
       - http:
           path: article
           method: get
+          origin: ${self:custom.webDomain}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+            allowCredentials: false
+
 
 
 resources:
@@ -72,6 +90,7 @@ custom:
       migrate: true
     seed: false
   dynamoTableName: blog_article_table
+  webDomain: https://blog.stopthe.world
 
 plugins:
   - serverless-offline
