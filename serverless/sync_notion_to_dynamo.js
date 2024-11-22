@@ -10,7 +10,6 @@ const client = process.env.IS_OFFLINE === 'true'
     : new DynamoDBClient({});
 const dynamo = DynamoDBDocumentClient.from(client);
 
-
 const tableName = process.env.DYNAMO_TABLE_NAME;
 const NOTION_API_KEY = process.env.NOTION_API_KEY;
 const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID;
@@ -47,6 +46,7 @@ async function saveArticleFromDynamoDatabase(article) {
                 title: article.title,
                 summary: article.summary,
                 content: article.content,
+                thumbnail: article.thumbnail,
                 createdAt: article.createdAt,
                 updatedAt: article.updatedAt,
             },
@@ -80,24 +80,32 @@ async function syncArticles() {
     console.debug("NotionDatabase Article Count :" + articles.length)
     const modifyTitles = [];
     for (const article of articles) {
+        //console.debug("article :" + JSON.stringify(article))
+
         const id = article.id;
         const tags = article.properties.tags.multi_select.map(item => item.name);
         const createdAt = article.properties.releaseAt.rich_text[0].plain_text;
         const updatedAt = article.last_edited_time;
         const title = article.properties.article.title[0].plain_text;
         const persistArticle = await getArticleFromDynamoDatabase(id);
+        let thumbnail = article.properties.thumbnail.url;
 
         if (newArticle(persistArticle) || modifyArticle(updatedAt, persistArticle)) {
 
             console.debug("Persistence Article : " + title);
             const content = await notionPageToMarkdown(id);
+            if (thumbnail == null) {
+                thumbnail = extractImageUrls(content);
+            }
+            const summary = extractSummary(content);
             await saveArticleFromDynamoDatabase({
                 id: id,
                 tags: tags,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 title: title,
-                summary: extractSummary(content),
+                thumbnail: thumbnail,
+                summary: summary,
                 content: content,
             });
             modifyTitles.push(title);
@@ -110,6 +118,22 @@ async function syncArticles() {
         modify: modifyTitles
     };
 }
+
+/**
+ * markdown 에서 이미지 테그를 찾아 리소스를 반환한다.
+ * @param markdownString
+ * @returns {*[]}
+ */
+function extractImageUrls(markdownString) {
+    const regex = /!\[.*?\]\((.*?)\)/g;
+    let match;
+
+    while ((match = regex.exec(markdownString)) !== null) {
+        return match[1];
+    }
+    return null;
+}
+
 
 async function notionPageToMarkdown(id) {
     const mdblocks = await n2m.pageToMarkdown(id);
@@ -126,8 +150,9 @@ function modifyArticle(updatedAt, persistArticle) {
 }
 
 function extractSummary(content) {
+    const center = content.length / 2;
     const start = content.slice(0, 50);
-    const end = content.slice(-50);
+    const end = content.slice(center, center + 50);
 
     return `${start}...${end}`;
 }
