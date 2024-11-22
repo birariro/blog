@@ -1,13 +1,19 @@
 org: birariro
 app: blog
 service: serverless
+
+
 provider:
   name: aws
   runtime: nodejs18.x
   region: ap-northeast-2
   timeout: 30  # lambda timeout 30초
   memorySize: 2048  # lambda memory size 2048 MB
+
   environment:
+    RESOURCE_BUCKET_NAME: ${self:custom.resource_bucket_name} #블로그 리소스 파일 S3 버킷
+    RESOURCE_API: https://resource.stopthe.world #블로그 리소스 파일 api
+    REGION: ap-northeast-2
     DYNAMODB_LOCAL_ENDPOINT: http://localhost:8000
     DYNAMO_TABLE_NAME: ${self:custom.dynamoTableName}
     ORIGIN_URL: ${self:custom.originUrl}
@@ -30,6 +36,8 @@ provider:
             - arn:aws:dynamodb:ap-northeast-2:*:table/${self:custom.dynamoTableName}/index/*
 functions:
   syncNotionToDynamo:
+    layers:
+      - { Ref: NodeModulesLambdaLayer }
     handler: sync_notion_to_dynamo.handler
     events:
       - http:
@@ -37,6 +45,8 @@ functions:
           method: get
 
   getArticleFromDynamo:
+    layers:
+      - { Ref: NodeModulesLambdaLayer }
     handler: get_article_from_dynamo.handler
     events:
       - http:
@@ -63,10 +73,36 @@ functions:
               - X-Api-Key
               - X-Amz-Security-Token
             allowCredentials: true
+layers:
+  nodeModules:
+    name: common-modules-layer
+    description: "node module package"
+    path: ./layer # todo root/node_modules 제거 방법 검토
+    compatibleRuntimes:
+      - nodejs18.x
 
-
+package:
+  individually: true
+  patterns:
+    - '!node_modules/**'
+    - '!venv/**'
+    - '!.git/**'
+    - '!test/**'
+    - '!e2e/**'
+    - '!src/**'
 resources:
   Resources:
+    #    NewResource: # todo s3와 cloud front, route53을 연결하는 yml을 작성해야한다.
+    #      Type: AWS::S3::Bucket
+    #      Properties:
+    #        BucketName: ${self:custom.resource_bucket_name}
+    #        PublicAccessBlockConfiguration:
+    #          BlockPublicAcls: false
+    #          BlockPublicPolicy: false
+    #          IgnorePublicAcls: false
+    #          RestrictPublicBuckets: false
+
+
     SyncArticleTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -80,6 +116,10 @@ resources:
         BillingMode: PAY_PER_REQUEST
 
 custom:
+
+  s3:
+    host: localhost
+    directory: /tmp
   dynamodb:
     stages:
       - dev
@@ -90,9 +130,11 @@ custom:
       heapMax: 1g
       migrate: true
     seed: false
+  resource_bucket_name: birariro-blog-image
   dynamoTableName: blog_article_table
   originUrl: https://blog.stopthe.world
-
-plugins:
-  - serverless-offline
-  - serverless-dynamodb-local
+#
+#plugins:
+#  - serverless-offline
+#  - serverless-s3-local
+#  - serverless-dynamodb-local
