@@ -10,6 +10,7 @@ provider:
   environment:
     DYNAMODB_LOCAL_ENDPOINT: http://localhost:8000
     DYNAMO_TABLE_NAME: ${self:custom.dynamoTableName}
+    ORIGIN_URL: ${self:custom.originUrl}
     NOTION_API_KEY: ${ssm:/notion/api_key}
     NOTION_DATABASE_ID: ${ssm:/notion/database_id}
     IS_OFFLINE: ${opt:stage, 'dev'}
@@ -42,26 +43,26 @@ functions:
           path: article/{id}
           method: get
           cors:
-            origin: ${self:custom.webDomain}
+            origin: ${self:custom.originUrl}
             headers:
               - Content-Type
               - X-Amz-Date
               - Authorization
               - X-Api-Key
               - X-Amz-Security-Token
-            allowCredentials: false
+            allowCredentials: true
       - http:
           path: article
           method: get
-          origin: ${self:custom.webDomain}
+          cors:
+            origin: ${self:custom.originUrl}
             headers:
               - Content-Type
               - X-Amz-Date
               - Authorization
               - X-Api-Key
               - X-Amz-Security-Token
-            allowCredentials: false
-
+            allowCredentials: true
 
 
 resources:
@@ -90,7 +91,7 @@ custom:
       migrate: true
     seed: false
   dynamoTableName: blog_article_table
-  webDomain: https://blog.stopthe.world
+  originUrl: https://blog.stopthe.world
 
 plugins:
   - serverless-offline

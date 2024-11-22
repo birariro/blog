@@ -7,22 +7,24 @@ const client = process.env.IS_OFFLINE === 'true'
 
 const dynamo = DynamoDBDocumentClient.from(client);
 const tableName = process.env.DYNAMO_TABLE_NAME;
+const origin = process.env.ORIGIN_URL;
 
 module.exports.handler = async (event) => {
     let body;
     let statusCode = 200;
     const headers = {
+        'Access-Control-Allow-Origin': origin,
+        'Access-Control-Allow-Credentials': true,
         "Content-Type": "application/json",
     };
 
     try {
         if (event.httpMethod === "GET") {
-            // Switch case 조건문에서 event.path를 비교하는 방식으로 변경
             if (event.path === "/article") {
                 body = await dynamo.send(
                     new ScanCommand({
                         TableName: tableName,
-                        ProjectionExpression: "id, title, summary, createdAt",
+                        ProjectionExpression: "id, title, summary,thumbnail, createdAt",
                     })
                 );
 
@@ -35,6 +37,7 @@ module.exports.handler = async (event) => {
                     return {
                         id: item.id,
                         title: item.title,
+                        thumbnail: item.thumbnail,
                         summary: item.summary,
                         createdAt: item.createdAt,
                     };
