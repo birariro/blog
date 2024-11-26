@@ -16,6 +16,7 @@ npm start
 #### Get Secret Value
 
 - [Notion Api Key](https://www.notion.so/profile/integrations)
+    - Permission Read, Update, Input
 - [Notion Database ID](https://developers.notion.com/reference/retrieve-a-database)
 
 ### deploy
