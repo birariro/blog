@@ -93,7 +93,7 @@ async function syncArticles() {
         const createdAt = article.properties.releaseAt.rich_text[0].plain_text;
         const updatedAt = article.last_edited_time;
         const title = article.properties.article.title[0].plain_text;
-
+        
         const persistArticle = await getArticleFromDynamoDatabase(id);
         if (newArticle(persistArticle) || modifyArticle(updatedAt, persistArticle)) {
 
@@ -132,11 +132,10 @@ async function syncArticles() {
  * @returns {Promise<void>}
  */
 const findThumbnailIfNecessaryReplace = async (article, imageUrls) => {
-    let thumbnail = article.properties.thumbnail.url;
+    const thumbnail = article?.properties?.thumbnail?.files?.[0]?.external?.url;
     if (thumbnail !== undefined) {
         return thumbnail;
     }
-
     if (imageUrls.length >= 1) {
         let imageUrl = imageUrls[0];
 
@@ -307,11 +306,31 @@ const findPageInBlocks = async (blockOrPageId) => {
     return [...blocks, ...childBlocks.flat()]
 }
 
-
+/**
+ * 빈 공백이 무시되는 상황이 발생하기에 직접 개행을 추가
+ * @param id
+ * @returns {Promise<string>}
+ */
 async function notionPageToMarkdown(id) {
     const mdblocks = await n2m.pageToMarkdown(id);
-    const mdString = n2m.toMarkdownString(mdblocks);
-    return mdString.parent;
+    const mdString = mdblocks.map(block => {
+        let markdownText = n2m.toMarkdownString([block]).parent;
+
+        if (markdownText === undefined) {
+            return "\n"
+        }
+
+        //해더 테그일경우 개행 제거
+        if (markdownText.startsWith("\n")) {
+            markdownText = markdownText.slice(1);
+        }
+        if (markdownText.endsWith("\n\n")) {
+            markdownText = markdownText.slice(0, -1);
+        }
+        return markdownText
+
+    }).join('');
+    return mdString;
 }
 
 function newArticle(persistArticle) {
