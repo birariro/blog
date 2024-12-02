@@ -133,7 +133,7 @@ custom:
   resource_bucket_name: birariro-blog-image
   dynamoTableName: blog_article_table
   originUrl: https://blog.stopthe.world
-#
+
 #plugins:
 #  - serverless-offline
 #  - serverless-s3-local
